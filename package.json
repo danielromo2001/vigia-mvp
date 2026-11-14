@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
     "setup": "prisma db push && prisma db seed",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
@@ -35,6 +36,7 @@
     "prisma": "^6.19.0",
     "tailwindcss": "4.3.3",
     "tsx": "^4.20.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }

@@ -3,25 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/auth";
+import { nextOrderCode } from "@/lib/codes";
 import type { FormState } from "@/lib/form-types";
-import { parseDateInput } from "@/lib/labels";
+import { failureCategories, parseDateInput } from "@/lib/labels";
 import { prisma } from "@/lib/prisma";
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
-}
-
-async function nextOrderCode() {
-  const year = new Date().getUTCFullYear();
-  const prefix = `OT-${year}-`;
-  const last = await prisma.workOrder.findFirst({
-    where: { code: { startsWith: prefix } },
-    orderBy: { code: "desc" },
-    select: { code: true },
-  });
-  const sequence = last ? Number(last.code.slice(prefix.length)) + 1 : 1;
-  return `${prefix}${String(Number.isFinite(sequence) ? sequence : 1).padStart(4, "0")}`;
 }
 
 export async function createWorkOrder(
@@ -33,10 +22,17 @@ export async function createWorkOrder(
   const equipmentId = Number(formData.get("equipmentId"));
   const type = text(formData, "type");
   const priority = text(formData, "priority") || "media";
+  const category = text(formData, "category");
   const description = text(formData, "description");
   const observations = text(formData, "observations") || null;
   const dueDate = parseDateInput(formData.get("dueDate"));
   const responsibleValue = Number(formData.get("responsibleId") || 0);
+  const aiAssisted = formData.get("aiAssisted") === "1";
+  const aiConfidenceValue = Number(formData.get("aiConfidence"));
+  const aiConfidence =
+    aiAssisted && Number.isFinite(aiConfidenceValue) && aiConfidenceValue > 0
+      ? Math.min(1, aiConfidenceValue)
+      : null;
 
   if (!Number.isInteger(equipmentId) || equipmentId <= 0) {
     return { error: "Selecciona el equipo al que se asocia la orden." };
@@ -46,6 +42,12 @@ export async function createWorkOrder(
   }
   if (!["alta", "media", "baja"].includes(priority)) {
     return { error: "Selecciona una prioridad válida." };
+  }
+  if (
+    category &&
+    !failureCategories.some((option) => option.value === category)
+  ) {
+    return { error: "Selecciona una categoría de falla válida." };
   }
   if (!description) {
     return { error: "Describe la intervención o la falla detectada." };
@@ -79,11 +81,14 @@ export async function createWorkOrder(
         code,
         equipmentId,
         type,
+        category: category || null,
         priority,
         description,
         observations,
         dueDate,
         responsibleId,
+        aiAssisted,
+        aiConfidence,
       },
     });
     orderId = order.id;

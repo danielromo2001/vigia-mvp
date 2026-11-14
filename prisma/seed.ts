@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+import { classifyFailure } from "../src/lib/ai/triage";
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ function fixedDate(value: string) {
 
 async function main() {
   console.log("Limpiando datos anteriores...");
+  await prisma.failureReport.deleteMany();
   await prisma.maintenanceLog.deleteMany();
   await prisma.workOrder.deleteMany();
   await prisma.preventivePlan.deleteMany();
@@ -23,15 +25,16 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.role.deleteMany();
 
-  const [tecnicoRole, adminRole, gerenciaRole] = await Promise.all([
+  const [tecnicoRole, adminRole, gerenciaRole, clinicoRole] = await Promise.all([
     prisma.role.create({ data: { name: "tecnico", label: "Técnico biomédico" } }),
     prisma.role.create({ data: { name: "administrador", label: "Administrador" } }),
     prisma.role.create({ data: { name: "gerencia", label: "Gerencia" } }),
+    prisma.role.create({ data: { name: "clinico", label: "Personal clínico" } }),
   ]);
 
   const password = await hash("Vigia2026*", 10);
 
-  const [tecnico, admin] = await Promise.all([
+  const [tecnico, admin, clinico] = await Promise.all([
     prisma.user.create({
       data: {
         name: "Emanuel Campo",
@@ -54,6 +57,14 @@ async function main() {
         email: "gerencia@vigia.co",
         passwordHash: password,
         roleId: gerenciaRole.id,
+      },
+    }),
+    prisma.user.create({
+      data: {
+        name: "Laura Méndez",
+        email: "clinico@vigia.co",
+        passwordHash: password,
+        roleId: clinicoRole.id,
       },
     }),
   ]);
@@ -323,10 +334,29 @@ async function main() {
       openedAt: atNoon(-5),
       dueDate: atNoon(-3),
     },
+    {
+      code: "OT-2026-0009",
+      equipmentId: byCode["EQ-005"].id,
+      type: "correctivo",
+      category: "hardware",
+      priority: "alta",
+      status: "abierta",
+      responsibleId: tecnico.id,
+      description:
+        "El desfibrilador no carga la batería y muestra error de energía.",
+      observations: "Generado desde el reporte RP-2026-0005.",
+      openedAt: atNoon(-6),
+      dueDate: atNoon(0),
+      aiAssisted: true,
+      aiConfidence: 0.86,
+    },
   ];
+
+  const ordersByCode: Record<string, { id: number }> = {};
 
   for (const data of ordenes) {
     const orden = await prisma.workOrder.create({ data });
+    ordersByCode[orden.code] = orden;
     if (orden.status === "cerrada" && orden.closedAt) {
       await prisma.maintenanceLog.create({
         data: {
@@ -340,11 +370,175 @@ async function main() {
     }
   }
 
+  console.log("Creando reportes de falla con triaje asistido por IA...");
+
+  type SeedReport = {
+    code: string;
+    equipmentCode: string;
+    reporterId: number;
+    description: string;
+    impact: "critico" | "alto" | "medio" | "bajo";
+    status: "pendiente" | "aceptada" | "ajustada" | "convertida" | "descartada";
+    decision?: "aceptada" | "ajustada" | "descartada";
+    finalCategory?: string;
+    finalPriority?: string;
+    reviewNotes?: string;
+    reviewedById?: number;
+    reviewedAt?: Date;
+    workOrderCode?: string;
+    createdAt: Date;
+  };
+
+  const reportes: SeedReport[] = [
+    {
+      code: "RP-2026-0001",
+      equipmentCode: "EQ-001",
+      reporterId: clinico.id,
+      description:
+        "El monitor de signos vitales de la UCI pediátrica no enciende desde esta mañana. El paciente requiere monitoreo continuo y el equipo está fuera de servicio.",
+      impact: "critico",
+      status: "pendiente",
+      createdAt: atNoon(-1),
+    },
+    {
+      code: "RP-2026-0002",
+      equipmentCode: "EQ-004",
+      reporterId: clinico.id,
+      description:
+        "La bomba de infusión presenta alarma de oclusión intermitente y el set de infusión se agotó. Requiere revisión del sensor de presión.",
+      impact: "alto",
+      status: "aceptada",
+      decision: "aceptada",
+      reviewedById: tecnico.id,
+      reviewedAt: atNoon(-2),
+      createdAt: atNoon(-3),
+    },
+    {
+      code: "RP-2026-0003",
+      equipmentCode: "EQ-006",
+      reporterId: tecnico.id,
+      description:
+        "El ecógrafo no sincroniza con el servidor y las imágenes no llegan al HIS. La conectividad de red es intermitente en consulta externa.",
+      impact: "medio",
+      status: "ajustada",
+      decision: "ajustada",
+      finalCategory: "red",
+      finalPriority: "media",
+      reviewNotes:
+        "Se confirma falla de conectividad del switch del servicio; no es un problema del equipo.",
+      reviewedById: tecnico.id,
+      reviewedAt: atNoon(-4),
+      createdAt: atNoon(-5),
+    },
+    {
+      code: "RP-2026-0004",
+      equipmentCode: "EQ-007",
+      reporterId: clinico.id,
+      description:
+        "La autoclave presenta fuga de vapor por el empaque de la puerta y no alcanza la presión de esterilización.",
+      impact: "alto",
+      status: "descartada",
+      decision: "descartada",
+      reviewNotes:
+        "Duplicado de una novedad ya atendida en la orden OT-2026-0003.",
+      reviewedById: tecnico.id,
+      reviewedAt: atNoon(-3),
+      createdAt: atNoon(-4),
+    },
+    {
+      code: "RP-2026-0005",
+      equipmentCode: "EQ-005",
+      reporterId: clinico.id,
+      description:
+        "El desfibrilador de urgencias no carga la batería y muestra error de energía. Es crítico para la atención de paro cardiorrespiratorio.",
+      impact: "critico",
+      status: "convertida",
+      decision: "aceptada",
+      finalCategory: "hardware",
+      finalPriority: "alta",
+      reviewedById: tecnico.id,
+      reviewedAt: atNoon(-6),
+      workOrderCode: "OT-2026-0009",
+      createdAt: atNoon(-7),
+    },
+    {
+      code: "RP-2026-0006",
+      equipmentCode: "EQ-010",
+      reporterId: clinico.id,
+      description:
+        "La lámpara de fototerapia no enciende y hay un recién nacido que requiere tratamiento por ictericia esta noche.",
+      impact: "alto",
+      status: "pendiente",
+      createdAt: atNoon(0),
+    },
+  ];
+
+  for (const data of reportes) {
+    const equipment = byCode[data.equipmentCode];
+    const suggestion = classifyFailure({
+      description: data.description,
+      impact: data.impact,
+      equipment: {
+        name: equipment.name,
+        criticality: equipment.criticality,
+        status: equipment.status,
+        location: equipment.location,
+        brand: equipment.brand,
+        model: equipment.model,
+      },
+      now: data.createdAt,
+    });
+
+    const hasDecision = data.status !== "pendiente";
+    const finalCategory =
+      data.status === "descartada"
+        ? null
+        : data.finalCategory ?? suggestion.category;
+    const finalPriority =
+      data.status === "descartada"
+        ? null
+        : data.finalPriority ?? suggestion.priority;
+
+    await prisma.failureReport.create({
+      data: {
+        code: data.code,
+        equipmentId: equipment.id,
+        reporterId: data.reporterId,
+        description: data.description,
+        impact: data.impact,
+        status: data.status,
+        aiCategory: suggestion.category,
+        aiPriority: suggestion.priority,
+        aiConfidence: suggestion.confidence,
+        aiScores: JSON.stringify(suggestion.categoryScores),
+        aiKeywords: JSON.stringify(suggestion.keywords),
+        aiReasons: JSON.stringify(suggestion.reasons),
+        aiSuggestedType: suggestion.suggestedType,
+        aiSuggestedDueDate: new Date(
+          `${suggestion.suggestedDueDate}T12:00:00.000Z`,
+        ),
+        aiModel: suggestion.model,
+        aiSource: suggestion.source,
+        finalCategory,
+        finalPriority,
+        decision: data.decision ?? null,
+        reviewNotes: data.reviewNotes ?? null,
+        reviewedById: hasDecision ? data.reviewedById ?? null : null,
+        reviewedAt: hasDecision ? data.reviewedAt ?? null : null,
+        workOrderId: data.workOrderCode
+          ? ordersByCode[data.workOrderCode]?.id ?? null
+          : null,
+        createdAt: data.createdAt,
+      },
+    });
+  }
+
   console.log("Datos de demostración listos.");
   console.log("Usuarios:");
   console.log("  tecnico@vigia.co / Vigia2026*");
   console.log("  admin@vigia.co / Vigia2026*");
   console.log("  gerencia@vigia.co / Vigia2026*");
+  console.log("  clinico@vigia.co / Vigia2026*");
 }
 
 main()

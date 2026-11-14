@@ -30,14 +30,22 @@ El documento de XP define el MVP como lo entregado al final de las iteraciones 1
 3. Programa su mantenimiento preventivo (frecuencia y próxima fecha).
 4. Crea una orden de trabajo correctiva o preventiva y la asigna.
 5. Actualiza y cierra la orden; la intervención queda en la hoja de vida.
-6. El administrador gestiona usuarios y roles.
-7. Gerencia consulta el dashboard: equipos, órdenes abiertas, preventivos próximos y cumplimiento.
+6. El personal clínico reporta una falla; la IA sugiere categoría y prioridad.
+7. Ingeniería biomédica acepta, ajusta o descarta la sugerencia y, si aplica,
+   convierte el reporte en una orden de trabajo.
+8. El administrador gestiona usuarios y roles.
+9. Gerencia consulta el dashboard: equipos, órdenes abiertas, preventivos
+   próximos, MTTR, MTBF, cumplimiento y desempeño del triaje IA.
 
 ## 3. Roles
 
-- **Técnico / ingeniero biomédico:** activos, hoja de vida, órdenes y planes preventivos.
-- **Administrador (Oficina de TICs):** usuarios, roles y catálogos.
+- **Técnico / ingeniero biomédico:** activos, hoja de vida, órdenes, planes
+  preventivos y revisión del triaje IA.
+- **Administrador (Oficina de TICs):** usuarios, roles, catálogos y revisión del
+  triaje IA.
 - **Gerencia:** consulta de dashboard y reportes.
+- **Personal clínico:** reporta fallas de equipos (CU-05) sin acceso a la gestión
+  de órdenes ni a la configuración del sistema.
 
 ## 4. Modelo de datos mínimo
 
@@ -47,6 +55,9 @@ El documento de XP define el MVP como lo entregado al final de las iteraciones 1
 - `hoja_vida` (id, equipo_id, fecha, tipo_evento, descripción, orden_id)
 - `ordenes_trabajo` (id, equipo_id, tipo, responsable_id, fecha_apertura, fecha_estimada, fecha_cierre, observaciones, estado)
 - `planes_preventivos` (id, equipo_id, frecuencia_días, última_fecha, próxima_fecha)
+- `reportes_falla` (id, código, equipo_id, reportante_id, descripción, impacto,
+  estado, sugerencia IA —categoría, prioridad, confianza, explicación—, decisión
+  humana, categoría y prioridad finales, revisor_id, orden_id)
 - `alertas` (id, equipo_id, tipo, fecha_programada, destinatario_id, estado) — opcional para el MVP
 - `auditoria` (id, usuario_id, acción, entidad, entidad_id, fecha) — recomendado para trazabilidad
 
@@ -76,3 +87,21 @@ El documento de XP define el MVP como lo entregado al final de las iteraciones 1
 3. ¿Solo local o desplegado en una URL?
 4. ¿Ya existe código/repositorio o se parte de cero?
 5. ¿El MVP debe incluir reportes PDF o basta el dashboard?
+
+## 8. Ampliación implementada: triaje asistido por IA
+
+Se agregó un módulo de **Reportes de falla** con un clasificador determinista y
+explicable (`vigia-triage-v1`) que sugiere categoría, prioridad, tipo de orden y
+fecha de atención a partir del relato, la criticidad del equipo y el impacto
+declarado. La sugerencia se guarda junto con la decisión humana para conservar
+trazabilidad. El módulo se integra con:
+
+- el formulario de creación de órdenes (autocompleta categoría, prioridad y
+  vencimiento);
+- el panel operativo (reportes pendientes de triaje);
+- los reportes de gestión (MTTR, MTBF, aceptación de la IA y confianza promedio);
+- la exportación CSV de reportes de falla.
+
+El enriquecimiento con un modelo de lenguaje externo es **opcional y está
+desactivado por defecto**. Ver [ia-reportes.md](ia-reportes.md) y las
+[recomendaciones de IA](ia-recomendaciones.md).

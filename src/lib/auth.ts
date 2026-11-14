@@ -96,3 +96,12 @@ export function isStaff(user: Pick<SessionUser, "role">) {
 export function isAdmin(user: Pick<SessionUser, "role">) {
   return user.role.name === "administrador";
 }
+
+/** Personal clínico, técnicos y administradores pueden reportar una falla. */
+export function canReport(user: Pick<SessionUser, "role">) {
+  return ["tecnico", "administrador", "clinico"].includes(user.role.name);
+}
+
+export async function requireReporter() {
+  return requireRoles("tecnico", "administrador", "clinico");
+}

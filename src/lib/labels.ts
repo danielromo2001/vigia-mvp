@@ -32,6 +32,91 @@ export const roles = [
   { value: "tecnico", label: "Técnico biomédico" },
   { value: "administrador", label: "Administrador" },
   { value: "gerencia", label: "Gerencia" },
+  { value: "clinico", label: "Personal clínico" },
+];
+
+/**
+ * Categorías de falla que usa el clasificador de IA y el triaje humano.
+ * El orden es el que se muestra en los formularios y en los reportes.
+ */
+export const failureCategories = [
+  {
+    value: "hardware",
+    label: "Hardware",
+    tone: "sky" as const,
+    description: "Componentes físicos, sensores, pantallas, tarjetas o partes mecánicas.",
+  },
+  {
+    value: "software",
+    label: "Software",
+    tone: "violet" as const,
+    description: "Firmware, configuración, licencias, bloqueos o errores de la aplicación.",
+  },
+  {
+    value: "red",
+    label: "Red y conectividad",
+    tone: "teal" as const,
+    description: "Wi-Fi, cableado de datos, servidores, sincronización o integraciones.",
+  },
+  {
+    value: "electrico",
+    label: "Eléctrico",
+    tone: "amber" as const,
+    description: "Alimentación, UPS, tomacorrientes, breakers, cortos o sobrecargas.",
+  },
+  {
+    value: "consumible",
+    label: "Consumibles y repuestos",
+    tone: "orange" as const,
+    description: "Filtros, empaques, sets, electrodos, baterías o insumos agotados.",
+  },
+  {
+    value: "infraestructura",
+    label: "Infraestructura",
+    tone: "slate" as const,
+    description: "Camas, puertas, redes de gases, aire acondicionado o planta física.",
+  },
+  {
+    value: "otro",
+    label: "Otro / por clasificar",
+    tone: "slate" as const,
+    description: "El relato no permite asignar una categoría con confianza suficiente.",
+  },
+];
+
+export const impacts = [
+  {
+    value: "critico",
+    label: "Crítico",
+    tone: "rose" as const,
+    description: "El equipo está fuera de servicio y afecta la atención de un paciente ahora.",
+  },
+  {
+    value: "alto",
+    label: "Alto",
+    tone: "orange" as const,
+    description: "El servicio está comprometido o hay un riesgo latente para el paciente.",
+  },
+  {
+    value: "medio",
+    label: "Medio",
+    tone: "amber" as const,
+    description: "Hay una falla que limita el uso, pero existe una alternativa disponible.",
+  },
+  {
+    value: "bajo",
+    label: "Bajo",
+    tone: "slate" as const,
+    description: "Molestia menor, solicitud de rutina o mejora sin afectar la atención.",
+  },
+];
+
+export const reportStatuses = [
+  { value: "pendiente", label: "Pendiente de triaje", tone: "amber" as const },
+  { value: "aceptada", label: "Sugerencia aceptada", tone: "emerald" as const },
+  { value: "ajustada", label: "Ajustada por el técnico", tone: "sky" as const },
+  { value: "convertida", label: "Convertida en orden", tone: "teal" as const },
+  { value: "descartada", label: "Descartada", tone: "slate" as const },
 ];
 
 export const eventTypes: Record<string, string> = {
@@ -52,7 +137,12 @@ export type MetaTone =
   | "orange"
   | "violet";
 
-type Option = { value: string; label: string; tone?: MetaTone };
+type Option = {
+  value: string;
+  label: string;
+  tone?: MetaTone;
+  description?: string;
+};
 
 function find(options: Option[], value?: string | null) {
   return options.find((option) => option.value === value);
@@ -100,6 +190,32 @@ export function priorityMeta(value?: string | null) {
 
 export function roleLabel(value?: string | null) {
   return roles.find((role) => role.value === value)?.label ?? value ?? "—";
+}
+
+export function failureCategoryMeta(value?: string | null) {
+  return find(failureCategories, value) ?? {
+    value: value ?? "",
+    label: value ?? "Sin categoría",
+    tone: "slate" as const,
+    description: "",
+  };
+}
+
+export function impactMeta(value?: string | null) {
+  return find(impacts, value) ?? {
+    value: value ?? "",
+    label: value ?? "Sin impacto",
+    tone: "slate" as const,
+    description: "",
+  };
+}
+
+export function reportStatusMeta(value?: string | null) {
+  return find(reportStatuses, value) ?? {
+    value: value ?? "",
+    label: value ?? "Sin estado",
+    tone: "slate" as const,
+  };
 }
 
 const dateFormatter = new Intl.DateTimeFormat("es-CO", {

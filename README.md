@@ -15,8 +15,9 @@ Aplicación web para gestionar el mantenimiento de equipos biomédicos: centrali
 - **Equipos:** registro y consulta de equipos biomédicos, con estado, criticidad, ubicación e historial de mantenimiento.
 - **Órdenes de trabajo:** creación, asignación, seguimiento y cierre de órdenes preventivas y correctivas.
 - **Mantenimiento preventivo:** programación por equipo según frecuencia y consulta de próximos vencimientos.
-- **Usuarios y roles:** administración de cuentas para técnicos, administradores y gerencia.
-- **Panel e informes:** indicadores de mantenimiento y exportación de órdenes a CSV.
+- **Reportes de falla con triaje asistido por IA:** el personal clínico reporta una falla y el sistema sugiere categoría, prioridad, tipo de orden y fecha de atención. Ingeniería biomédica acepta, ajusta o descarta la sugerencia antes de convertirla en orden. ([Detalle técnico](docs/ia-reportes.md))
+- **Usuarios y roles:** administración de cuentas para técnicos biomédicos, administradores, gerencia y personal clínico.
+- **Panel e informes:** indicadores MTTR y MTBF, cumplimiento preventivo, desempeño del triaje IA y exportación de órdenes y reportes a CSV.
 
 ## Tecnologías
 
@@ -24,6 +25,8 @@ Aplicación web para gestionar el mantenimiento de equipos biomédicos: centrali
 - TypeScript y Tailwind CSS 4
 - Prisma ORM 6 y SQLite
 - Autenticación con sesiones y contraseñas con hash mediante bcrypt
+- Vitest para pruebas unitarias del clasificador y de los indicadores
+- Clasificador local determinista `vigia-triage-v1`, con enriquecimiento opcional mediante un LLM compatible con la API de OpenAI
 
 ## Requisitos
 
@@ -77,6 +80,7 @@ El seed crea estas cuentas locales; todas usan la contraseña `Vigia2026*`:
 | Técnico biomédico | `tecnico@vigia.co` |
 | Administrador | `admin@vigia.co` |
 | Gerencia | `gerencia@vigia.co` |
+| Personal clínico | `clinico@vigia.co` |
 
 Estas credenciales son únicamente para desarrollo local. **No las uses ni las publiques en una instancia accesible desde internet.**
 
@@ -88,6 +92,7 @@ Estas credenciales son únicamente para desarrollo local. **No las uses ni las p
 | `npm run build` | Genera la compilación de producción. |
 | `npm run start` | Sirve la compilación de producción. |
 | `npm run lint` | Ejecuta ESLint. |
+| `npm test` | Ejecuta las pruebas unitarias con Vitest. |
 | `npm run setup` | Sincroniza el esquema y carga los datos de demostración. **El seed borra los datos existentes.** |
 | `npm run db:push` | Sincroniza el esquema con la base de datos configurada. |
 | `npm run db:seed` | Borra los datos existentes y vuelve a cargar la demostración. |
@@ -107,7 +112,7 @@ prisma/
 docs/           Requerimientos, diagramas y capturas
 ```
 
-Consulta el [plan del MVP](docs/mvp-plan.md), los [requerimientos](docs/requerimientos.txt) y el [diagrama de arquitectura C4](docs/Diagramas_C4_Mantenimiento_Hospitalario.drawio) para más contexto del proyecto.
+Consulta el [plan del MVP](docs/mvp-plan.md), los [requerimientos](docs/requerimientos.txt), el [diagrama de arquitectura C4](docs/Diagramas_C4_Mantenimiento_Hospitalario.drawio), el [detalle del triaje IA](docs/ia-reportes.md) y las [recomendaciones de IA](docs/ia-recomendaciones.md) para más contexto del proyecto.
 
 ## Seguridad y datos
 
@@ -115,3 +120,4 @@ Consulta el [plan del MVP](docs/mvp-plan.md), los [requerimientos](docs/requerim
 - Configura un `SESSION_SECRET` único y seguro para cada entorno.
 - El seed contiene datos y credenciales de demostración; no es una configuración de producción. Tanto `npm run setup` como `npm run db:seed` borran los datos actuales al ejecutar el seed.
 - Revisa y reemplaza la configuración de SQLite antes de desplegar en un entorno compartido.
+- El triaje de IA funciona **localmente** por defecto. Solo se envía información a un proveedor externo si se configura `AI_LLM_API_KEY`; en ese caso las descripciones no deben contener datos identificables del paciente. Ver [docs/ia-reportes.md](docs/ia-reportes.md).

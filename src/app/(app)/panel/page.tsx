@@ -8,8 +8,10 @@ import {
   CheckCircle2,
   ClipboardList,
   Clock,
+  MessageSquareWarning,
   Plus,
   ShieldCheck,
+  Sparkles,
   Stethoscope,
   Wrench,
 } from "lucide-react";
@@ -25,10 +27,12 @@ import {
 } from "@/components/ui";
 import { isStaff, requireUser } from "@/lib/auth";
 import {
+  failureCategoryMeta,
   formatDate,
   formatShortDate,
   orderStatusMeta,
   orderTypeMeta,
+  priorityMeta,
   relativeDays,
 } from "@/lib/labels";
 import { prisma } from "@/lib/prisma";
@@ -56,8 +60,15 @@ export default async function DashboardPage() {
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
   );
 
-  const [equipment, openOrders, recentOrders, plans, closedThisMonth, activity] =
-    await Promise.all([
+  const [
+    equipment,
+    openOrders,
+    recentOrders,
+    plans,
+    closedThisMonth,
+    activity,
+    pendingReports,
+  ] = await Promise.all([
       prisma.equipment.findMany({
         include: { plan: true },
         orderBy: { code: "asc" },
@@ -84,6 +95,11 @@ export default async function DashboardPage() {
         include: { equipment: true },
         orderBy: { date: "desc" },
         take: 4,
+      }),
+      prisma.failureReport.findMany({
+        where: { status: "pendiente" },
+        include: { equipment: true, reporter: true },
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       }),
     ]);
 
@@ -186,19 +202,28 @@ export default async function DashboardPage() {
               {greeting}, {firstName}.
             </h1>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">
-              {openOrders.length > 0 || overduePlans.length > 0 ? (
+              {openOrders.length > 0 ||
+              overduePlans.length > 0 ||
+              pendingReports.length > 0 ? (
                 <>
                   Tienes{" "}
                   <span className="font-semibold text-white">
                     {openOrders.length}{" "}
                     {openOrders.length === 1 ? "orden activa" : "órdenes activas"}
-                  </span>{" "}
-                  y{" "}
+                  </span>
+                  ,{" "}
                   <span className="font-semibold text-white">
                     {overduePlans.length}{" "}
                     {overduePlans.length === 1
                       ? "preventivo vencido"
                       : "preventivos vencidos"}
+                  </span>{" "}
+                  y{" "}
+                  <span className="font-semibold text-white">
+                    {pendingReports.length}{" "}
+                    {pendingReports.length === 1
+                      ? "reporte de falla por triar"
+                      : "reportes de falla por triar"}
                   </span>
                   . Prioriza los equipos de criticidad alta para proteger la
                   continuidad del servicio.
@@ -550,6 +575,72 @@ export default async function DashboardPage() {
             )}
           </Card>
 
+          <Card>
+            <CardHeader
+              title="Reportes de falla por triar"
+              description="La IA ya sugirió categoría y prioridad."
+              action={
+                <Link
+                  href="/reportes-falla?estado=pendiente"
+                  className="text-xs font-semibold text-teal-600 hover:text-teal-700"
+                >
+                  Ver todos
+                </Link>
+              }
+            />
+            {pendingReports.length === 0 ? (
+              <div className="px-5 py-8 text-center">
+                <CheckCircle2 className="mx-auto h-9 w-9 text-emerald-500" />
+                <p className="mt-2 text-sm font-semibold text-slate-800">
+                  Sin reportes pendientes
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Todo el triaje asistido por IA está al día.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100">
+                {pendingReports.slice(0, 4).map((report) => {
+                  const category = failureCategoryMeta(report.aiCategory);
+                  const priority = priorityMeta(report.aiPriority);
+                  return (
+                    <Link
+                      key={report.id}
+                      href={`/reportes-falla/${report.id}`}
+                      className="group flex gap-3 px-5 py-3.5 transition hover:bg-slate-50/70"
+                    >
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+                        <MessageSquareWarning className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-semibold text-slate-800">
+                          {report.equipment.name}
+                        </p>
+                        <p className="mt-0.5 truncate text-[11px] text-slate-500">
+                          {report.code} · {report.reporter?.name ?? "Sin reportante"}
+                        </p>
+                        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                          <Badge tone={category.tone}>{category.label}</Badge>
+                          <Badge tone={priority.tone}>{priority.label}</Badge>
+                          <span className="inline-flex items-center gap-1 text-[10px] text-slate-400">
+                            <Sparkles className="h-3 w-3" />
+                            {Math.round(report.aiConfidence * 100)}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="self-center text-right">
+                        <p className="text-[10px] font-medium text-slate-400">
+                          {relativeDays(report.createdAt)}
+                        </p>
+                        <ArrowRight className="ml-auto mt-1 h-4 w-4 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-teal-500" />
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
+
           <Card className="p-5">
             <div className="mb-4 flex items-start justify-between">
               <div>
@@ -641,8 +732,18 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[
+          {
+            href: "/reportes-falla",
+            label: "Reportes de falla",
+            detail: `${pendingReports.length} ${
+              pendingReports.length === 1
+                ? "pendiente de triaje"
+                : "pendientes de triaje"
+            }`,
+            icon: MessageSquareWarning,
+          },
           {
             href: "/equipos",
             label: "Inventario biomédico",

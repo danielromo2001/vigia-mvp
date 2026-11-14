@@ -7,6 +7,7 @@ import {
   ClipboardList,
   History,
   MapPin,
+  MessageSquareWarning,
   Pencil,
   Plus,
   Stethoscope,
@@ -19,7 +20,7 @@ import {
   EmptyState,
   ProgressBar,
 } from "@/components/ui";
-import { isStaff, requireUser } from "@/lib/auth";
+import { canReport, isStaff, requireUser } from "@/lib/auth";
 import {
   criticalityMeta,
   equipmentStatusMeta,
@@ -143,24 +144,35 @@ export default async function EquipmentDetailPage({
           </div>
         </div>
 
-        {staff ? (
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
+          {canReport(user) ? (
             <Link
-              href={`/equipos/${equipment.id}/editar`}
-              className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+              href={`/reportes-falla/nueva?equipo=${equipment.id}`}
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-4 text-sm font-semibold text-violet-700 shadow-sm transition hover:bg-violet-100"
             >
-              <Pencil className="h-4 w-4" />
-              Editar
+              <MessageSquareWarning className="h-4 w-4" />
+              Reportar falla
             </Link>
-            <Link
-              href={`/ordenes/nueva?equipo=${equipment.id}`}
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
-            >
-              <Plus className="h-4 w-4" />
-              Nueva orden
-            </Link>
-          </div>
-        ) : null}
+          ) : null}
+          {staff ? (
+            <>
+              <Link
+                href={`/equipos/${equipment.id}/editar`}
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+              >
+                <Pencil className="h-4 w-4" />
+                Editar
+              </Link>
+              <Link
+                href={`/ordenes/nueva?equipo=${equipment.id}`}
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
+              >
+                <Plus className="h-4 w-4" />
+                Nueva orden
+              </Link>
+            </>
+          ) : null}
+        </div>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-3">

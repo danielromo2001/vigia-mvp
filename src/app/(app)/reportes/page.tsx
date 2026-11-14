@@ -5,10 +5,13 @@ import {
   AlertTriangle,
   ArrowRight,
   BarChart3,
+  BrainCircuit,
   CheckCircle2,
   ClipboardList,
   Download,
   Gauge,
+  MessageSquareWarning,
+  Sparkles,
   Stethoscope,
   Timer,
   Wrench,
@@ -27,8 +30,14 @@ import {
 import { PrintButton } from "@/components/print-button";
 import { requireUser } from "@/lib/auth";
 import {
+  computeAcceptanceRate,
+  computeMtbfDays,
+  computeMttrHours,
+} from "@/lib/metrics";
+import {
   daysUntil,
   equipmentStatusMeta,
+  failureCategories,
   formatDate,
   formatLongDate,
   orderStatusMeta,
@@ -50,21 +59,35 @@ export default async function ReportsPage() {
   const in30 = new Date(now);
   in30.setUTCDate(in30.getUTCDate() + 30);
 
-  const [equipment, orders, plans] = await Promise.all([
-    prisma.equipment.findMany({
-      include: { plan: true, _count: { select: { workOrders: true } } },
-      orderBy: { code: "asc" },
-    }),
-    prisma.workOrder.findMany({
-      include: { equipment: true, responsible: true },
-      orderBy: { openedAt: "desc" },
-    }),
-    prisma.preventivePlan.findMany({
-      where: { active: true },
-      include: { equipment: true },
-      orderBy: { nextDate: "asc" },
-    }),
-  ]);
+  const [equipment, orders, plans, correctiveLogs, failureReports] =
+    await Promise.all([
+      prisma.equipment.findMany({
+        include: { plan: true, _count: { select: { workOrders: true } } },
+        orderBy: { code: "asc" },
+      }),
+      prisma.workOrder.findMany({
+        include: { equipment: true, responsible: true },
+        orderBy: { openedAt: "desc" },
+      }),
+      prisma.preventivePlan.findMany({
+        where: { active: true },
+        include: { equipment: true },
+        orderBy: { nextDate: "asc" },
+      }),
+      prisma.maintenanceLog.findMany({
+        where: { eventType: "correctivo" },
+        select: { equipmentId: true, date: true },
+      }),
+      prisma.failureReport.findMany({
+        select: {
+          decision: true,
+          status: true,
+          aiCategory: true,
+          finalCategory: true,
+          aiConfidence: true,
+        },
+      }),
+    ]);
 
   const totalEquipment = equipment.length;
   const operativos = equipment.filter((item) => item.status === "operativo").length;
@@ -173,6 +196,49 @@ export default async function ReportsPage() {
     .sort((a, b) => b._count.workOrders - a._count.workOrders)
     .slice(0, 6);
 
+  // Indicadores RF-08: MTTR (horas) y MTBF (días) sobre datos reales.
+  const mttrHours = computeMttrHours(orders);
+  const mtbf = computeMtbfDays(correctiveLogs);
+
+  // Desempeño del triaje asistido por IA.
+  const acceptanceRate = computeAcceptanceRate(failureReports);
+  const reviewedReports = failureReports.filter((report) =>
+    ["aceptada", "ajustada"].includes(report.decision ?? ""),
+  ).length;
+  const adjustedReports = failureReports.filter(
+    (report) => report.decision === "ajustada",
+  ).length;
+  const pendingReports = failureReports.filter(
+    (report) => report.status === "pendiente",
+  ).length;
+  const averageAiConfidence = failureReports.length
+    ? Math.round(
+        (failureReports.reduce(
+          (sum, report) => sum + report.aiConfidence,
+          0,
+        ) /
+          failureReports.length) *
+          100,
+      )
+    : null;
+  const categoryDistribution = failureCategories
+    .map((category) => ({
+      value: category.value,
+      label: category.label,
+      tone: category.tone,
+      count: failureReports.filter(
+        (report) =>
+          (report.finalCategory ?? report.aiCategory) === category.value,
+      ).length,
+    }))
+    .filter((category) => category.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+  const maxCategoryCount = Math.max(
+    1,
+    ...categoryDistribution.map((category) => category.count),
+  );
+
   return (
     <div>
       <div className="mb-4 hidden print:block">
@@ -247,6 +313,153 @@ export default async function ReportsPage() {
           hint={`${closedOrders.length} órdenes cerradas en total`}
         />
       </div>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="MTTR · tiempo medio de reparación"
+          value={mttrHours === null ? "—" : `${mttrHours} h`}
+          icon={<Timer className="h-5 w-5" />}
+          tone="sky"
+          hint="Promedio de horas de las órdenes correctivas cerradas"
+        />
+        <StatCard
+          label="MTBF · tiempo entre fallas"
+          value={mtbf.days === null ? "—" : `${mtbf.days} días`}
+          icon={<Activity className="h-5 w-5" />}
+          tone="teal"
+          hint={`${mtbf.failures} fallas registradas en ${mtbf.equipmentWithFailures} equipos`}
+        />
+        <StatCard
+          label="Aceptación de la IA"
+          value={acceptanceRate === null ? "—" : `${acceptanceRate}%`}
+          icon={<Sparkles className="h-5 w-5" />}
+          tone="violet"
+          hint={`${reviewedReports} reportes revisados · ${adjustedReports} ajustados`}
+        />
+        <StatCard
+          label="Reportes por triar"
+          value={pendingReports}
+          icon={<BrainCircuit className="h-5 w-5" />}
+          tone={pendingReports > 0 ? "amber" : "emerald"}
+          hint={
+            averageAiConfidence === null
+              ? "Aún no hay reportes de falla"
+              : `Confianza promedio de la IA: ${averageAiConfidence}%`
+          }
+        />
+      </div>
+
+      <Card className="mt-6">
+        <CardHeader
+          title="Triaje asistido por IA"
+          description="Categorías sugeridas y validadas por ingeniería biomédica."
+          action={
+            <Link
+              href="/reportes-falla"
+              className="no-print inline-flex items-center gap-1 text-xs font-semibold text-teal-600 hover:text-teal-700"
+            >
+              Ver reportes
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          }
+        />
+        {failureReports.length === 0 ? (
+          <EmptyState
+            icon={<MessageSquareWarning className="h-6 w-6" />}
+            title="Sin reportes de falla"
+            description="Cuando el personal reporte una falla, aquí verás el desempeño del clasificador."
+          />
+        ) : (
+          <div className="grid gap-5 px-5 py-5 lg:grid-cols-2">
+            <div className="space-y-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                Distribución por categoría
+              </p>
+              {categoryDistribution.map((category) => (
+                <div key={category.value}>
+                  <div className="mb-1 flex items-center justify-between text-xs">
+                    <span className="inline-flex items-center gap-2 text-slate-600">
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          category.tone === "sky"
+                            ? "bg-sky-500"
+                            : category.tone === "violet"
+                              ? "bg-violet-500"
+                              : category.tone === "teal"
+                                ? "bg-teal-500"
+                                : category.tone === "amber"
+                                  ? "bg-amber-500"
+                                  : category.tone === "orange"
+                                    ? "bg-orange-500"
+                                    : "bg-slate-400"
+                        }`}
+                      />
+                      {category.label}
+                    </span>
+                    <span className="font-semibold text-slate-700">
+                      {category.count}
+                    </span>
+                  </div>
+                  <ProgressBar
+                    value={(category.count / maxCategoryCount) * 100}
+                    tone="teal"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                <p className="text-[10px] uppercase tracking-wider text-slate-400">
+                  Reportes totales
+                </p>
+                <p className="mt-1 text-2xl font-semibold text-slate-900">
+                  {failureReports.length}
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  Con sugerencia de categoría y prioridad
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                <p className="text-[10px] uppercase tracking-wider text-slate-400">
+                  Confianza promedio
+                </p>
+                <p className="mt-1 text-2xl font-semibold text-slate-900">
+                  {averageAiConfidence === null
+                    ? "—"
+                    : `${averageAiConfidence}%`}
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  Del clasificador vigia-triage-v1
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                <p className="text-[10px] uppercase tracking-wider text-slate-400">
+                  Aceptadas sin ajuste
+                </p>
+                <p className="mt-1 text-2xl font-semibold text-teal-600">
+                  {failureReports.filter(
+                    (report) => report.decision === "aceptada",
+                  ).length}
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  {acceptanceRate === null ? "Sin revisados" : `${acceptanceRate}%`}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                <p className="text-[10px] uppercase tracking-wider text-slate-400">
+                  Ajustadas por el técnico
+                </p>
+                <p className="mt-1 text-2xl font-semibold text-sky-600">
+                  {adjustedReports}
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  Corregidas antes de crear la orden
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </Card>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
@@ -601,7 +814,7 @@ export default async function ReportsPage() {
         )}
       </Card>
 
-      <div className="no-print mt-6 grid gap-3 sm:grid-cols-2">
+      <div className="no-print mt-6 grid gap-3 sm:grid-cols-3">
         <Link
           href="/ordenes"
           className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-teal-200 hover:shadow-md"
@@ -615,6 +828,23 @@ export default async function ReportsPage() {
             </span>
             <span className="block text-[11px] text-slate-400">
               {orders.length} registros · exportables en CSV
+            </span>
+          </span>
+          <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-teal-500" />
+        </Link>
+        <Link
+          href="/reportes-falla"
+          className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-teal-200 hover:shadow-md"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+            <MessageSquareWarning className="h-4 w-4" />
+          </span>
+          <span className="flex-1">
+            <span className="block text-xs font-semibold text-slate-800">
+              Reportes de falla y triaje IA
+            </span>
+            <span className="block text-[11px] text-slate-400">
+              {failureReports.length} reportes · {pendingReports} por revisar
             </span>
           </span>
           <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-teal-500" />

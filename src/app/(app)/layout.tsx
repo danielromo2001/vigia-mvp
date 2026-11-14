@@ -11,7 +11,7 @@ export default async function AppLayout({
   const user = await requireUser();
   const today = new Date();
 
-  const [overduePlans, overdueOrders] = await Promise.all([
+  const [overduePlans, overdueOrders, pendingReports] = await Promise.all([
     prisma.preventivePlan.count({
       where: { active: true, nextDate: { lt: today } },
     }),
@@ -21,6 +21,7 @@ export default async function AppLayout({
         dueDate: { lt: today },
       },
     }),
+    prisma.failureReport.count({ where: { status: "pendiente" } }),
   ]);
 
   return (
@@ -31,6 +32,7 @@ export default async function AppLayout({
         role: { name: user.role.name, label: user.role.label },
       }}
       alertCount={overduePlans + overdueOrders}
+      reportCount={pendingReports}
       todayLabel={formatLongDate(today)}
     >
       {children}

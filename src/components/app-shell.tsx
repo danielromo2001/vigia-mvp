@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  MessageSquareWarning,
   ShieldCheck,
   Stethoscope,
   Users,
@@ -29,6 +30,11 @@ type ShellUser = {
 
 const operationNav = [
   { href: "/panel", label: "Panel", icon: LayoutDashboard },
+  {
+    href: "/reportes-falla",
+    label: "Reportes de falla",
+    icon: MessageSquareWarning,
+  },
   { href: "/equipos", label: "Equipos biomédicos", icon: Stethoscope },
   { href: "/ordenes", label: "Órdenes de trabajo", icon: ClipboardList },
   { href: "/preventivos", label: "Preventivos", icon: CalendarClock },
@@ -51,11 +57,13 @@ function initials(name: string) {
 export function AppShell({
   user,
   alertCount,
+  reportCount,
   todayLabel,
   children,
 }: {
   user: ShellUser;
   alertCount: number;
+  reportCount: number;
   todayLabel: string;
   children: React.ReactNode;
 }) {
@@ -147,6 +155,11 @@ export function AppShell({
                     {item.href === "/preventivos" && alertCount > 0 ? (
                       <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500/90 px-1.5 text-[10px] font-bold text-white">
                         {alertCount}
+                      </span>
+                    ) : null}
+                    {item.href === "/reportes-falla" && reportCount > 0 ? (
+                      <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-violet-500/90 px-1.5 text-[10px] font-bold text-white">
+                        {reportCount}
                       </span>
                     ) : null}
                   </Link>

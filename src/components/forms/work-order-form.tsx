@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ClipboardList, Save, Wrench } from "lucide-react";
 import { createWorkOrder } from "@/app/actions/work-orders";
 import { SubmitButton } from "@/components/submit-button";
+import { TriageAssistant } from "@/components/forms/triage-assistant";
 import {
   Field,
   cn,
@@ -12,7 +13,9 @@ import {
   selectClass,
   textareaClass,
 } from "@/components/ui";
+import type { TriageResult } from "@/lib/ai/triage";
 import type { FormState } from "@/lib/form-types";
+import { failureCategories, impacts } from "@/lib/labels";
 
 type EquipmentOption = {
   id: number;
@@ -44,6 +47,25 @@ export function WorkOrderForm({
   const [type, setType] = useState(
     defaultType === "correctivo" ? "correctivo" : "preventivo",
   );
+  const [equipmentId, setEquipmentId] = useState(
+    defaultEquipmentId ? String(defaultEquipmentId) : "",
+  );
+  const [description, setDescription] = useState("");
+  const [impact, setImpact] = useState("medio");
+  const [priority, setPriority] = useState("media");
+  const [dueDate, setDueDate] = useState("");
+  const [category, setCategory] = useState("");
+  const [aiApplied, setAiApplied] = useState(false);
+  const [aiConfidence, setAiConfidence] = useState<number | null>(null);
+
+  function applySuggestion(suggestion: TriageResult) {
+    setType(suggestion.suggestedType);
+    setPriority(suggestion.priority);
+    setDueDate(suggestion.suggestedDueDate);
+    setCategory(suggestion.category);
+    setAiApplied(true);
+    setAiConfidence(suggestion.confidence);
+  }
 
   return (
     <form action={formAction} className="space-y-5">
@@ -54,6 +76,11 @@ export function WorkOrderForm({
         >
           {state.error}
         </div>
+      ) : null}
+
+      <input type="hidden" name="aiAssisted" value={aiApplied ? "1" : "0"} />
+      {aiApplied && aiConfidence !== null ? (
+        <input type="hidden" name="aiConfidence" value={aiConfidence} />
       ) : null}
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -82,7 +109,8 @@ export function WorkOrderForm({
               id="equipmentId"
               name="equipmentId"
               required
-              defaultValue={defaultEquipmentId ?? ""}
+              value={equipmentId}
+              onChange={(event) => setEquipmentId(event.target.value)}
               className={selectClass}
             >
               <option value="" disabled>
@@ -151,11 +179,31 @@ export function WorkOrderForm({
             </div>
           </div>
 
+          <Field
+            label="Impacto en la atención"
+            htmlFor="impact"
+            hint="Ayuda a estimar la prioridad con la IA."
+          >
+            <select
+              id="impact"
+              value={impact}
+              onChange={(event) => setImpact(event.target.value)}
+              className={selectClass}
+            >
+              {impacts.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
           <Field label="Prioridad" htmlFor="priority">
             <select
               id="priority"
               name="priority"
-              defaultValue="media"
+              value={priority}
+              onChange={(event) => setPriority(event.target.value)}
               className={selectClass}
             >
               <option value="alta">Alta</option>
@@ -164,13 +212,40 @@ export function WorkOrderForm({
             </select>
           </Field>
 
-          <Field label="Fecha estimada de ejecución" htmlFor="dueDate">
+          <Field
+            label="Fecha estimada de ejecución"
+            htmlFor="dueDate"
+            hint="La IA la calcula según la prioridad sugerida."
+          >
             <input
               id="dueDate"
               name="dueDate"
               type="date"
+              value={dueDate}
+              onChange={(event) => setDueDate(event.target.value)}
               className={inputClass}
             />
+          </Field>
+
+          <Field
+            label="Categoría de la falla"
+            htmlFor="category"
+            hint="Opcional. La IA puede completarla."
+          >
+            <select
+              id="category"
+              name="category"
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+              className={selectClass}
+            >
+              <option value="">Sin categoría</option>
+              {failureCategories.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </Field>
 
           <Field
@@ -199,12 +274,15 @@ export function WorkOrderForm({
             htmlFor="description"
             required
             className="sm:col-span-2"
+            hint="Con al menos 15 caracteres puedes pedir una sugerencia de triaje."
           >
             <textarea
               id="description"
               name="description"
-              rows={3}
+              rows={4}
               required
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
               placeholder="Describe el trabajo a realizar o la falla reportada por el área…"
               className={textareaClass}
             />
@@ -226,6 +304,14 @@ export function WorkOrderForm({
           </Field>
         </div>
       </section>
+
+      <TriageAssistant
+        equipmentId={equipmentId}
+        description={description}
+        impact={impact}
+        onApply={applySuggestion}
+        applied={aiApplied}
+      />
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         <Link
