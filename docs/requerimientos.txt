@@ -1,0 +1,811 @@
+ENTREGA FINAL DEL PROYECTO
+EMANUEL CAMPO, DANIEL RODRIGUEZ
+INTRODUCCION
+[List Paragraph] Características del producto
+[List Paragraph] Descripción del producto
+[List Paragraph] Objetivos del sistema
+[List Paragraph] Alcance del producto
+[List Paragraph] Valor del producto
+[List Paragraph] Público objetivo
+[List Paragraph] Uso previsto
+[List Paragraph] Elicitación de requisitos
+[List Paragraph] Definición de la visión
+[List Paragraph] Identificación del problema
+[List Paragraph] Identificación de los interesados
+[List Paragraph] Definición de requisitos funcionales
+[List Paragraph] Análisis y especificación de requisitos
+[List Paragraph] Modelo de casos de uso del sistema
+[List Paragraph] Especificación de actores del sistema
+[List Paragraph] Diagramas de casos de uso del sistema
+[List Paragraph] Descripción de casos de uso del sistema
+[List Paragraph] Modelo basado en historias de usuarios
+[List Paragraph] Descripción: Historias de usuarios
+[List Paragraph] Lista de product backlog
+[List Paragraph] Especificación de requisitos funcionales del sistema
+[List Paragraph] Especificación de requisitos no funcionales del sistema
+[List Paragraph] Requisitos de interfaz externa
+[List Paragraph] Otros requisitos
+[List Paragraph] Trazabilidad de los requisitos
+[List Paragraph] Glosario
+[List Paragraph] CONCLUSIONES
+[List Paragraph] REFERENCIAS
+[List Paragraph] Características del producto
+[List Paragraph] Descripción del sistema
+[List Paragraph] El sistema propuesto es un aplicativo web para la gestión del proceso de mantenimiento hospitalario, orientado a centralizar el control, el seguimiento y la optimización de las actividades de mantenimiento preventivo y correctivo que se realizan sobre la infraestructura física y los equipos biomédicos de la Unidad Pediátrica Simón Bolívar IPS S.A.S. El aplicativo permite registrar los activos hospitalarios (equipos e infraestructura) junto con su respectiva hoja de vida, generar y gestionar órdenes de trabajo, programar mantenimientos preventivos mediante alertas y notificaciones automáticas, administrar el inventario de repuestos y proveedores, y producir reportes e indicadores de gestión que evidencien el desempeño del proceso de mantenimiento.
+[List Paragraph] Entre sus características principales se destacan la trazabilidad completa de las intervenciones realizadas sobre cada equipo, la posibilidad de interoperar con otros sistemas hospitalarios y una arquitectura modular y escalable que sienta las bases para incorporar, en futuras versiones, capacidades de analítica avanzada orientadas al mantenimiento predictivo. El propósito del sistema es sustituir los registros manuales planillas físicas, hojas de cálculo aisladas y correos electrónicos dispersos por una plataforma digital única, con beneficios que se traducen en una mayor disponibilidad y confiabilidad de los equipos biomédicos, la reducción de tiempos de inactividad y de costos de mantenimiento correctivo, y el fortalecimiento de la seguridad del paciente y la calidad de la atención hospitalaria.
+[List Paragraph] Objetivos del sistema
+[List Paragraph] Objetivo general
+[List Paragraph] Implementar un aplicativo que centralice la información de los equipos biomédicos y la infraestructura de la unidad, optimizando las actividades preventivas y correctivas y mejorando la disponibilidad y trazabilidad de los recursos.
+[List Paragraph] Objetivos específicos:
+[List Paragraph] Analizar los procesos actuales de gestión del mantenimiento preventivo y correctivo de la Unidad Pediátrica Simón Bolívar IPS S.A.S., para determinar los requisitos funcionales y no funcionales del aplicativo a partir de la información recolectada mediante las técnicas de elicitación aplicadas a los interesados del proceso.
+[List Paragraph] Diseñar la arquitectura del sistema y los modelos de casos de uso e historias de usuario que soporten el aplicativo de gestión del mantenimiento hospitalario.
+[List Paragraph] Desarrollar los módulos funcionales de registro de activos, órdenes de trabajo, alertas preventivas, inventario de repuestos y generación de reportes, conforme a los requisitos y modelos definidos, garantizando la trazabilidad de las intervenciones de mantenimiento sobre los activos hospitalarios.
+[List Paragraph] Implementar el aplicativo en el entorno de la Unidad Pediátrica Simón Bolívar IPS S.A.S., realizando las pruebas necesarias para validar su correcto funcionamiento e integración con los procesos existentes.
+[List Paragraph] Definir los indicadores de gestión (KPIs) que permitan evaluar el desempeño del proceso de mantenimiento y apoyar la toma de decisiones técnicas y administrativas.
+[List Paragraph] Alcance del sistema
+[List Paragraph] El aplicativo comprende el desarrollo de los siguientes módulos y funcionalidades, orientados a automatizar el proceso de mantenimiento hospitalario de la Unidad Pediátrica Simón Bolívar IPS S.A.S.:
+[List Paragraph] Registro de activos hospitalarios (equipos biomédicos e infraestructura) con su respectiva hoja de vida.
+[List Paragraph] Gestión de órdenes de trabajo para mantenimientos preventivos y correctivos.
+[List Paragraph] Programación preventiva mediante alertas y notificaciones automáticas.
+[List Paragraph] Gestión de inventario de repuestos y proveedores.
+[List Paragraph] Generación de reportes e indicadores de gestión (KPIs), tales como tiempo medio de reparación (MTTR), tiempo medio entre fallas (MTBF) y cumplimiento de cronogramas de mantenimiento.
+[List Paragraph] Valor del producto
+[List Paragraph] El aplicativo genera valor para la Unidad Pediátrica Simón Bolívar IPS S.A.S. al sustituir los registros manuales y dispersos por una plataforma centralizada que:
+[List Paragraph] Reduce los tiempos de indisponibilidad de los equipos biomédicos críticos.
+[List Paragraph] Disminuye los costos asociados a mantenimientos correctivos de emergencia, favoreciendo la planificación preventiva.
+[List Paragraph] Facilita la trazabilidad y la evidencia documental requerida en auditorías y procesos de habilitación hospitalaria.
+[List Paragraph] Mejora la toma de decisiones técnicas y administrativas mediante indicadores automatizados.
+[List Paragraph] Fortalece la seguridad del paciente al garantizar mayor disponibilidad y confiabilidad de los equipos biomédicos.
+[List Paragraph] Público objetivo
+[List Paragraph] El aplicativo está destinado a los siguientes grupos de interés de la Unidad Pediátrica Simón Bolívar IPS S.A.S.:
+[List Paragraph] Personal técnico y de ingeniería biomédica, responsable de ejecutar y registrar las intervenciones de mantenimiento.
+[List Paragraph] Administración hospitalaria y Oficina de TICs, responsables de la gestión de presupuestos, contratos de mantenimiento y políticas de reemplazo o renovación de equipos.
+[List Paragraph] Personal clínico, beneficiado indirectamente por la mayor disponibilidad y confiabilidad de los equipos.
+[List Paragraph] Proveedores y fabricantes de equipos biomédicos, que interactúan con el módulo de inventario y repuestos.
+[List Paragraph] Entidades regulatorias y de auditoría, que requieren evidencia de cumplimiento normativo.
+[List Paragraph] Uso previsto
+[List Paragraph] El personal técnico y de ingeniería biomédica utilizará el aplicativo de forma diaria para registrar activos, generar y cerrar órdenes de trabajo, y consultar el historial de intervenciones de cada equipo.
+[List Paragraph] La administración hospitalaria consultará periódicamente los reportes e indicadores generados por el sistema para apoyar decisiones de presupuesto, priorización de mantenimientos y renovación de equipos.
+[List Paragraph] Los proveedores y las áreas de compras emplearán el módulo de inventario para verificar la disponibilidad de repuestos y gestionar solicitudes de reposición.
+[List Paragraph] En procesos de auditoría, el personal de calidad y las entidades regulatorias utilizarán los reportes de trazabilidad del sistema como evidencia del cumplimiento de los planes de mantenimiento.
+[List Paragraph] Elicitación de requisitos
+[List Paragraph] Definición de la visión
+[List Paragraph] Para el personal técnico y de ingeniería biomédica, la administración hospitalaria y el personal clínico de la Unidad Pediátrica Simón Bolívar IPS S.A.S., quienes actualmente gestionan el mantenimiento de la infraestructura y los equipos biomédicos mediante planillas físicas, hojas de cálculo aisladas y registros dispersos en correo electrónico, el aplicativo para la gestión del mantenimiento hospitalario es una plataforma web que centraliza el registro, la programación y el seguimiento de las actividades de mantenimiento preventivo y correctivo. A diferencia de los mecanismos manuales empleados actualmente, el aplicativo ofrece trazabilidad completa de las intervenciones realizadas sobre cada equipo, alertas automáticas para la programación preventiva, gestión integrada del inventario de repuestos y proveedores, y reportes con indicadores de gestión, contribuyendo así a una mayor disponibilidad de los equipos biomédicos, la reducción de costos operativos y el fortalecimiento de la seguridad del paciente.
+[List Paragraph] Identificación del problema (Cual es el problema, a quien afecta, el impacto, y la solución)
+[List Paragraph] En la Unidad Pediátrica Simón Bolívar IPS S.A.S., al igual que en gran parte de las instituciones de salud de la región, los procesos de mantenimiento preventivo y correctivo de la infraestructura y los equipos biomédicos se gestionan de forma manual, mediante planillas físicas, hojas de cálculo aisladas y registros dispersos en correo electrónico. Esta situación dificulta la trazabilidad de las intervenciones realizadas, la planificación de las actividades de mantenimiento y la identificación oportuna de patrones que permitan anticipar fallas, lo que se traduce en una gestión predominantemente reactiva: los mantenimientos correctivos superan a los preventivos, generando mayores costos, tiempos de indisponibilidad de equipos y riesgos para la continuidad y la seguridad de la atención.
+[List Paragraph] El problema de la ausencia de un sistema centralizado para la gestión del mantenimiento hospitalario afecta a el personal técnico y de ingeniería biomédica, la administración hospitalaria, el personal clínico y, en última instancia, a los pacientes de la unidad, el impacto de esto es la frecuente indisponibilidad de equipos biomédicos por fallas recurrentes, la falta de trazabilidad en los historiales de mantenimiento, los retrasos en la atención de pacientes por ausencia de equipos disponibles en momentos críticos, y la carencia de reportes consolidados que permitan evaluar indicadores de desempeño como tiempos de respuesta o cumplimiento de cronogramas, una solución exitosa sería el desarrollo de un aplicativo que centralice la información de mantenimientos preventivos y correctivos, genere reportes automáticos y trazabilidad completa de equipos e intervenciones, implemente alertas para la programación preventiva, y gestione de forma integrada el inventario de repuestos y proveedores de la unidad.
+[List Paragraph] Identificación de los interesados
+
+| INTERESADO | ROL | RESPONSABILIDADES | INTERÉS |
+| Ingenieros y técnicos de mantenimiento biomédico | Usuario Directo | Ejecutar y registrar las intervenciones de mantenimiento preventivo y correctivo; actualizar la hoja de vida de los equipos. | Contar con una herramienta ágil que reduzca la carga administrativa y facilite el registro y la consulta de historiales de mantenimiento. |
+| Jefatura de la Oficina de TICs | Product champions | Supervisar el desarrollo del aplicativo, validar los requerimientos técnicos y gestionar los recursos de TI de la unidad. | Que el aplicativo se integre adecuadamente con la infraestructura tecnológica existente y cumpla los estándares institucionales. |
+| Gerencia / administración hospitalaria | Patrocinador (Sponsor) | Aprobar el presupuesto, priorizar la implementación y definir políticas de mantenimiento y renovación de equipos. | Reducir costos operativos, mejorar los indicadores de disponibilidad de equipos y cumplir la normativa de habilitación. |
+| Personal clínico (Medicos, enfermeros, auxiliares) | Usuario Directo | Usuarios finales de los equipos biomédicos; que interactúan directamente con el sistema. | Disponibilidad y confiabilidad de los equipos para la atención segura de los pacientes. |
+| Proveedores y fabricantes de equipos biomédicos | Proveedor | Suministrar repuestos, soporte técnico y garantías de los equipos. | Procesos claros para la solicitud de repuestos y trazabilidad de garantías. |
+| Entidades regulatorias y de auditoría en salud (MinSalud y Secretaría de Salud Dep.) | Consejero/ regulador | Verificar el cumplimiento de la normativa de habilitación y calidad en salud. | Evidencia y trazabilidad de las actividades de mantenimiento para procesos de auditoría y habilitación. |
+
+Matriz de Poder - Interés
+
+| INTERESADO | PODER | INTERÉS |
+| Ingenieros y técnicos de mantenimiento biomédico | Bajo | Alto |
+| Jefatura de la Oficina de TICs | Alto | Alto |
+| Gerencia / administración hospitalaria | Alto | Bajo |
+| Personal clínico (Medicos, enfermeros, auxiliares) | Bajo | Alto |
+| Proveedores y fabricantes de equipos biomédicos | Bajo | Bajo |
+| Entidades regulatorias y de auditoría en salud | Bajo | Bajo |
+
+Anexo: Técnica de elicitación de requisitos: Entrevista
+Como técnica de elicitación de requisitos, se aplicará la entrevista a cada uno de los interesados identificados, con el fin de indagar sus necesidades, expectativas y restricciones frente al aplicativo. A continuación, se plantean dos preguntas orientadoras por cada interesado:
+Ingenieros y técnicos de mantenimiento biomédico
+1. ¿Cuáles son los pasos que sigue actualmente para registrar y hacer seguimiento a una intervención de mantenimiento preventivo o correctivo sobre un equipo biomédico, y qué dificultades encuentra en ese proceso?
+2. ¿Qué información considera indispensable tener disponible (historial del equipo, repuestos, manuales técnicos, entre otros) al momento de atender una orden de trabajo?
+Jefatura de la Oficina de TICs
+1. ¿Con qué sistemas de información existentes en la entidad debería integrarse el aplicativo, y qué restricciones técnicas o de seguridad debe cumplir?
+2. ¿Qué roles y niveles de acceso considera necesarios dentro del aplicativo para el personal técnico y administrativo?
+Gerencia / administración hospitalaria
+1. ¿Qué indicadores o reportes de gestión (KPIs) necesita recibir periódicamente para evaluar el desempeño del proceso de mantenimiento y tomar decisiones de presupuesto?
+2. ¿Qué requisitos normativos o de habilitación en salud debe cumplir el sistema en materia de mantenimiento de equipos biomédicos?
+Personal clínico (médicos, enfermeros, auxiliares)
+1. ¿Con qué frecuencia se ha visto afectada su labor asistencial por la indisponibilidad o falla de un equipo biomédico, y cómo reporta actualmente esa novedad?
+2. ¿Qué información le gustaría poder consultar de forma rápida sobre el estado o la disponibilidad de un equipo antes de utilizarlo con un paciente?
+Proveedores y fabricantes de equipos biomédicos
+1. ¿Qué información requiere de la entidad para procesar oportunamente una solicitud de repuestos o de servicio técnico (garantía, especificaciones del equipo, historial de fallas)?
+2. ¿De qué manera prefiere recibir y confirmar las solicitudes de mantenimiento o suministro (correo electrónico, portal web, integración directa) para agilizar los tiempos de respuesta?
+Entidades regulatorias y de auditoría en salud
+1. ¿Qué evidencias o documentos exige actualmente para verificar el cumplimiento del programa de mantenimiento hospitalario en un proceso de auditoría o habilitación?
+2. ¿Qué formato o nivel de detalle deben tener los reportes de trazabilidad de mantenimiento para que sean válidos como soporte documental ante una visita de inspección?
+[List Paragraph] Definición de requisitos funcionales
+[List Paragraph] Defina requisitos por cada necesidad de los usuarios
+
+| Identificador | Descripción |
+| RF-01 | El sistema deberá permitir registrar los activos hospitalarios (equipos biomédicos e infraestructura) con su respectiva hoja de vida. |
+| RF-02 | El sistema deberá permitir consultar y actualizar la hoja de vida de cada activo hospitalario. |
+| RF-03 | El sistema deberá permitir crear, asignar y cerrar órdenes de trabajo de mantenimiento preventivo y correctivo. |
+| RF-04 | El sistema deberá permitir programar mantenimientos preventivos según la periodicidad definida para cada equipo. |
+| RF-05 | El sistema deberá generar alertas y notificaciones automáticas ante el vencimiento o la proximidad de un mantenimiento preventivo. |
+| RF-06 | El sistema deberá permitir registrar y consultar el inventario de repuestos disponibles. |
+| RF-07 | El sistema deberá permitir registrar y consultar la información de los proveedores de repuestos y servicios técnicos. |
+| RF-08 | El sistema deberá generar reportes e indicadores de gestión (KPIs), tales como MTTR, MTBF y cumplimiento de cronogramas. |
+| RF-09 | El sistema deberá permitir la autenticación de usuarios y el control de acceso según el rol asignado (técnico, administrador, gerencia). |
+| RF-10 | El sistema deberá permitir a la administración hospitalaria consultar reportes consolidados de mantenimiento. |
+| RF-11 | El sistema deberá registrar la trazabilidad completa de las intervenciones realizadas sobre cada equipo. |
+| RF-12 | El sistema deberá permitir exportar los reportes de mantenimiento en formato PDF como evidencia para auditorías. |
+
+[List Paragraph] Análisis y especificación de requisitos
+[List Paragraph] Modelo de casos de uso del sistema
+[List Paragraph] Especificación de actores del sistema
+
+| Actor | Descripción |
+| Técnico / Ingeniero de mantenimiento biomédico | Actor principal que registra los activos hospitalarios, gestiona las órdenes de trabajo, programa los mantenimientos preventivos y consulta el historial de intervenciones de cada equipo. |
+| Administrador del sistema (Jefatura de la Oficina de TICs) | Actor responsable de la configuración del aplicativo, la gestión de usuarios y roles, la administración de proveedores y la supervisión técnica del sistema. |
+| Personal clínico (Medicos, enfermeros y auxiliares.) | Actor que interactúa directamente con el sistema para consultar el estado y la disponibilidad de los equipos biomédicos antes de su uso, y para reportar novedades o fallas detectadas durante la atención al paciente, contribuyendo así a la trazabilidad del historial de mantenimiento. |
+
+[List Paragraph] Diagramas de casos de uso del sistema
+[Text body] Figura 1. Diagrama de casos de uso del sistema
+[Text body] Figura 2. Diagrama Gestionar orden de trabajo.
+[Text body] Figura 3. Diagrama Gestionar inventario de repuestos.
+[Text body] Figura 4. Diagrama Gestionar proveedores.
+[List Paragraph] Descripción de casos de uso del sistema
+
+| ID: | CU-01 |
+| Nombre: | Registrar activo hospitalario |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite registrar un nuevo activo hospitalario (equipo biomédico o infraestructura) junto con los datos de su hoja de vida. | Permite registrar un nuevo activo hospitalario (equipo biomédico o infraestructura) junto con los datos de su hoja de vida. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| El técnico ha iniciado sesión con permisos de registro de activos. | El técnico ha iniciado sesión con permisos de registro de activos. |
+| Flujo Normal: | Flujo Normal: |
+| 1. El técnico selecciona la opción “Registrar activo”. 2. El sistema muestra el formulario de registro. 3. El técnico ingresa nombre, tipo, ubicación, fabricante, fecha de adquisición y ficha técnica. 4. El sistema valida la información. 5. El sistema almacena el activo y genera su hoja de vida inicial. 6. El sistema confirma el registro. | 1. El técnico selecciona la opción “Registrar activo”. 2. El sistema muestra el formulario de registro. 3. El técnico ingresa nombre, tipo, ubicación, fabricante, fecha de adquisición y ficha técnica. 4. El sistema valida la información. 5. El sistema almacena el activo y genera su hoja de vida inicial. 6. El sistema confirma el registro. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si los datos obligatorios están incompletos o son inválidos, el sistema muestra un error y solicita corrección. | Si los datos obligatorios están incompletos o son inválidos, el sistema muestra un error y solicita corrección. |
+| Poscondiciones: | Poscondiciones: |
+| El activo queda registrado con su hoja de vida disponible para consulta. | El activo queda registrado con su hoja de vida disponible para consulta. |
+
+
+| ID: | CU-02 |
+| Nombre: | Consultar hoja de vida del equipo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite consultar el historial completo de intervenciones, características y estado de un equipo biomédico. | Permite consultar el historial completo de intervenciones, características y estado de un equipo biomédico. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico, Personal clínico | Técnico de mantenimiento biomédico, Personal clínico |
+| Precondiciones: | Precondiciones: |
+| El activo debe estar previamente registrado. | El activo debe estar previamente registrado. |
+| Flujo Normal: | Flujo Normal: |
+| 1. El usuario selecciona “Consultar hoja de vida”. 2. El sistema solicita el identificador o nombre del equipo. 3. El usuario ingresa el criterio de búsqueda. 4. El sistema muestra la hoja de vida con datos técnicos e historial. | 1. El usuario selecciona “Consultar hoja de vida”. 2. El sistema solicita el identificador o nombre del equipo. 3. El usuario ingresa el criterio de búsqueda. 4. El sistema muestra la hoja de vida con datos técnicos e historial. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el equipo no existe, el sistema muestra un mensaje de “sin resultados”. | Si el equipo no existe, el sistema muestra un mensaje de “sin resultados”. |
+| Poscondiciones: | Poscondiciones: |
+| El usuario visualiza la información completa del equipo. | El usuario visualiza la información completa del equipo. |
+
+
+| ID: | CU-03 |
+| Nombre: | Programar mantenimiento preventivo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite definir la periodicidad y fecha de un mantenimiento preventivo, generando automáticamente la alerta correspondiente («include» CU-04). | Permite definir la periodicidad y fecha de un mantenimiento preventivo, generando automáticamente la alerta correspondiente («include» CU-04). |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| El activo debe estar registrado; el técnico debe tener permisos de programación. | El activo debe estar registrado; el técnico debe tener permisos de programación. |
+| Flujo Normal: | Flujo Normal: |
+| 1. El técnico selecciona el activo a programar. 2. El sistema muestra el formulario de frecuencia y próxima fecha. 3. El técnico define la periodicidad. 4. El sistema guarda la programación. 5. Se ejecuta CU-04 al aproximarse la fecha. | 1. El técnico selecciona el activo a programar. 2. El sistema muestra el formulario de frecuencia y próxima fecha. 3. El técnico define la periodicidad. 4. El sistema guarda la programación. 5. Se ejecuta CU-04 al aproximarse la fecha. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si ya existe una programación activa, el sistema permite modificarla en vez de crear una nueva. | Si ya existe una programación activa, el sistema permite modificarla en vez de crear una nueva. |
+| Poscondiciones: | Poscondiciones: |
+| El mantenimiento queda programado y las alertas activadas. | El mantenimiento queda programado y las alertas activadas. |
+
+
+| ID: | CU-04 |
+| Nombre: | Enviar alerta de mantenimiento |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| El sistema genera y envía una notificación automática cuando se aproxima la fecha de un mantenimiento preventivo programado. | El sistema genera y envía una notificación automática cuando se aproxima la fecha de un mantenimiento preventivo programado. |
+| Actores: | Actores: |
+| Ninguno (caso de uso interno, incluido desde CU-03) | Ninguno (caso de uso interno, incluido desde CU-03) |
+| Precondiciones: | Precondiciones: |
+| Debe existir una programación de mantenimiento activa. | Debe existir una programación de mantenimiento activa. |
+| Flujo Normal: | Flujo Normal: |
+| 1. El sistema verifica diariamente las fechas programadas. 2. Al detectar una fecha próxima, genera la alerta. 3. Notifica al técnico responsable. | 1. El sistema verifica diariamente las fechas programadas. 2. Al detectar una fecha próxima, genera la alerta. 3. Notifica al técnico responsable. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el mantenimiento ya fue ejecutado antes de la fecha límite, el sistema cancela la alerta pendiente. | Si el mantenimiento ya fue ejecutado antes de la fecha límite, el sistema cancela la alerta pendiente. |
+| Poscondiciones: | Poscondiciones: |
+| El técnico queda notificado del mantenimiento próximo. | El técnico queda notificado del mantenimiento próximo. |
+
+
+| ID: | CU-05 |
+| Nombre: | Consultar/reportar estado del equipo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite consultar la disponibilidad de un equipo antes de usarlo y reportar una falla o novedad detectada. | Permite consultar la disponibilidad de un equipo antes de usarlo y reportar una falla o novedad detectada. |
+| Actores: | Actores: |
+| Personal clínico | Personal clínico |
+| Precondiciones: | Precondiciones: |
+| El equipo debe estar registrado. | El equipo debe estar registrado. |
+| Flujo Normal: | Flujo Normal: |
+| 1. El usuario consulta el estado del equipo. 2. El sistema muestra disponibilidad y estado actual. 3. Si detecta una falla, selecciona “Reportar falla”. 4. El sistema registra la novedad en el historial. 5. Notifica al técnico de mantenimiento. | 1. El usuario consulta el estado del equipo. 2. El sistema muestra disponibilidad y estado actual. 3. Si detecta una falla, selecciona “Reportar falla”. 4. El sistema registra la novedad en el historial. 5. Notifica al técnico de mantenimiento. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si no hay novedades, el flujo termina en el paso 2 sin generar reporte. | Si no hay novedades, el flujo termina en el paso 2 sin generar reporte. |
+| Poscondiciones: | Poscondiciones: |
+| El estado es consultado y/o la falla queda registrada para atención. | El estado es consultado y/o la falla queda registrada para atención. |
+
+
+| ID: | CU-06 |
+| Nombre: | Administrar usuarios y roles |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite crear, editar, desactivar usuarios y asignar roles dentro del aplicativo. | Permite crear, editar, desactivar usuarios y asignar roles dentro del aplicativo. |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| El administrador debe tener permisos de configuración. | El administrador debe tener permisos de configuración. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Accede al módulo de usuarios. 2. El sistema muestra el listado existente. 3. Crea, edita o desactiva un usuario y asigna rol. 4. El sistema valida y guarda. | 1. Accede al módulo de usuarios. 2. El sistema muestra el listado existente. 3. Crea, edita o desactiva un usuario y asigna rol. 4. El sistema valida y guarda. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el usuario ya existe con el mismo identificador, el sistema rechaza la creación. | Si el usuario ya existe con el mismo identificador, el sistema rechaza la creación. |
+| Poscondiciones: | Poscondiciones: |
+| Usuarios y roles quedan actualizados. | Usuarios y roles quedan actualizados. |
+
+
+| ID: | CU-07 |
+| Nombre: | Generar reportes e indicadores (KPI) |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite generar reportes con indicadores de gestión (MTTR, MTBF, cumplimiento de cronogramas). | Permite generar reportes con indicadores de gestión (MTTR, MTBF, cumplimiento de cronogramas). |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| Deben existir órdenes de trabajo e intervenciones registradas. | Deben existir órdenes de trabajo e intervenciones registradas. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona el módulo de reportes. 2. El sistema solicita filtros (fechas, tipo de equipo/mantenimiento). 3. Aplica los filtros. 4. El sistema calcula y muestra los indicadores. | 1. Selecciona el módulo de reportes. 2. El sistema solicita filtros (fechas, tipo de equipo/mantenimiento). 3. Aplica los filtros. 4. El sistema calcula y muestra los indicadores. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si no hay datos suficientes en el rango, el sistema informa que no hay resultados. | Si no hay datos suficientes en el rango, el sistema informa que no hay resultados. |
+| Poscondiciones: | Poscondiciones: |
+| El administrador cuenta con los indicadores para la toma de decisiones. | El administrador cuenta con los indicadores para la toma de decisiones. |
+
+
+| ID: | CU-08 |
+| Nombre: | Consultar reportes de gestión |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite consultar y exportar reportes de trazabilidad de mantenimiento como evidencia documental. | Permite consultar y exportar reportes de trazabilidad de mantenimiento como evidencia documental. |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| Deben existir reportes o datos disponibles para consulta. | Deben existir reportes o datos disponibles para consulta. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Accede al módulo de reportes de gestión. 2. El sistema muestra reportes con filtros. 3. Selecciona el reporte deseado. 4. El sistema lo despliega y permite exportar en PDF. | 1. Accede al módulo de reportes de gestión. 2. El sistema muestra reportes con filtros. 3. Selecciona el reporte deseado. 4. El sistema lo despliega y permite exportar en PDF. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si no existe reporte para el periodo consultado, el sistema notifica la ausencia de información. | Si no existe reporte para el periodo consultado, el sistema notifica la ausencia de información. |
+| Poscondiciones: | Poscondiciones: |
+| El administrador obtiene el reporte consultado o exportado. | El administrador obtiene el reporte consultado o exportado. |
+
+
+| ID: | CU-09 |
+| Nombre: | Crear orden de trabajo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite registrar una nueva orden de trabajo para una intervención preventiva o correctiva. | Permite registrar una nueva orden de trabajo para una intervención preventiva o correctiva. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| El activo debe estar registrado. | El activo debe estar registrado. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona “Crear orden de trabajo”. 2. El sistema muestra el formulario (activo, tipo, descripción, prioridad). 3. Diligencia los datos. 4. El sistema guarda la orden con estado “Por hacer”. | 1. Selecciona “Crear orden de trabajo”. 2. El sistema muestra el formulario (activo, tipo, descripción, prioridad). 3. Diligencia los datos. 4. El sistema guarda la orden con estado “Por hacer”. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el activo no existe o está inactivo, el sistema no permite continuar. | Si el activo no existe o está inactivo, el sistema no permite continuar. |
+| Poscondiciones: | Poscondiciones: |
+| La orden queda creada y disponible para seguimiento. | La orden queda creada y disponible para seguimiento. |
+
+
+| ID: | CU-10 |
+| Nombre: | Consultar orden de trabajo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite consultar el estado y los detalles de una o varias órdenes registradas. | Permite consultar el estado y los detalles de una o varias órdenes registradas. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| Debe existir al menos una orden registrada. | Debe existir al menos una orden registrada. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona “Consultar orden de trabajo”. 2. El sistema muestra el listado con filtros (estado, fecha, equipo). 3. Selecciona una orden. 4. El sistema muestra el detalle completo. | 1. Selecciona “Consultar orden de trabajo”. 2. El sistema muestra el listado con filtros (estado, fecha, equipo). 3. Selecciona una orden. 4. El sistema muestra el detalle completo. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si no hay coincidencias, el sistema muestra un listado vacío con el mensaje correspondiente. | Si no hay coincidencias, el sistema muestra un listado vacío con el mensaje correspondiente. |
+| Poscondiciones: | Poscondiciones: |
+| El técnico visualiza la información solicitada. | El técnico visualiza la información solicitada. |
+
+
+| ID: | CU-11 |
+| Nombre: | Actualizar orden de trabajo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite modificar los datos o el estado de una orden existente durante su ejecución. | Permite modificar los datos o el estado de una orden existente durante su ejecución. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| La orden debe existir y estar en un estado editable (no cerrada). | La orden debe existir y estar en un estado editable (no cerrada). |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona la orden a actualizar. 2. El sistema muestra los datos actuales. 3. Modifica avance, observaciones o estado. 4. El sistema guarda los cambios y actualiza la fecha de modificación. | 1. Selecciona la orden a actualizar. 2. El sistema muestra los datos actuales. 3. Modifica avance, observaciones o estado. 4. El sistema guarda los cambios y actualiza la fecha de modificación. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si la orden ya está cerrada, el sistema no permite la edición. | Si la orden ya está cerrada, el sistema no permite la edición. |
+| Poscondiciones: | Poscondiciones: |
+| La orden queda actualizada con la información más reciente. | La orden queda actualizada con la información más reciente. |
+
+
+| ID: | CU-12 |
+| Nombre: | Cerrar orden de trabajo |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite finalizar una orden una vez concluida la intervención, actualizando la hoja de vida del equipo. | Permite finalizar una orden una vez concluida la intervención, actualizando la hoja de vida del equipo. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| La orden debe estar en estado “En proceso”. | La orden debe estar en estado “En proceso”. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona la orden a cerrar. 2. El sistema solicita el resumen de la intervención (repuestos usados, observaciones). 3. Confirma el cierre. 4. El sistema cambia el estado a “Cerrada” y actualiza la hoja de vida del equipo. | 1. Selecciona la orden a cerrar. 2. El sistema solicita el resumen de la intervención (repuestos usados, observaciones). 3. Confirma el cierre. 4. El sistema cambia el estado a “Cerrada” y actualiza la hoja de vida del equipo. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si quedan repuestos pendientes por confirmar, el sistema solicita completarlos antes del cierre. | Si quedan repuestos pendientes por confirmar, el sistema solicita completarlos antes del cierre. |
+| Poscondiciones: | Poscondiciones: |
+| La orden queda cerrada y el historial del equipo actualizado. | La orden queda cerrada y el historial del equipo actualizado. |
+
+
+| ID: | CU-13 |
+| Nombre: | Registrar repuesto |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite registrar un nuevo repuesto en el inventario. | Permite registrar un nuevo repuesto en el inventario. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| El técnico debe tener permisos sobre el módulo de inventario. | El técnico debe tener permisos sobre el módulo de inventario. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona “Registrar repuesto”. 2. El sistema muestra el formulario (nombre, código, cantidad inicial, proveedor asociado). 3. Ingresa los datos. 4. El sistema guarda el repuesto. | 1. Selecciona “Registrar repuesto”. 2. El sistema muestra el formulario (nombre, código, cantidad inicial, proveedor asociado). 3. Ingresa los datos. 4. El sistema guarda el repuesto. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el código ya existe, el sistema rechaza el registro y sugiere actualizar el existente. | Si el código ya existe, el sistema rechaza el registro y sugiere actualizar el existente. |
+| Poscondiciones: | Poscondiciones: |
+| El repuesto queda disponible en el inventario. | El repuesto queda disponible en el inventario. |
+
+
+| ID: | CU-14 |
+| Nombre: | Consultar stock de repuestos |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite consultar la cantidad disponible de un repuesto antes de una intervención. | Permite consultar la cantidad disponible de un repuesto antes de una intervención. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| Debe existir al menos un repuesto registrado. | Debe existir al menos un repuesto registrado. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona “Consultar stock”. 2. El sistema muestra el listado con cantidad disponible. 3. Busca el repuesto requerido. 4. El sistema muestra la disponibilidad. | 1. Selecciona “Consultar stock”. 2. El sistema muestra el listado con cantidad disponible. 3. Busca el repuesto requerido. 4. El sistema muestra la disponibilidad. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el stock está por debajo del mínimo configurado, se incluye automáticamente CU-16. | Si el stock está por debajo del mínimo configurado, se incluye automáticamente CU-16. |
+| Poscondiciones: | Poscondiciones: |
+| El técnico conoce la disponibilidad del repuesto. | El técnico conoce la disponibilidad del repuesto. |
+
+
+| ID: | CU-15 |
+| Nombre: | Actualizar cantidad disponible |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite ajustar la cantidad disponible de un repuesto tras su uso o un ingreso de stock. | Permite ajustar la cantidad disponible de un repuesto tras su uso o un ingreso de stock. |
+| Actores: | Actores: |
+| Técnico de mantenimiento biomédico | Técnico de mantenimiento biomédico |
+| Precondiciones: | Precondiciones: |
+| El repuesto debe existir en el inventario. | El repuesto debe existir en el inventario. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona el repuesto a actualizar. 2. El sistema muestra la cantidad actual. 3. Ingresa el ajuste (salida o entrada). 4. El sistema actualiza la cantidad. | 1. Selecciona el repuesto a actualizar. 2. El sistema muestra la cantidad actual. 3. Ingresa el ajuste (salida o entrada). 4. El sistema actualiza la cantidad. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el ajuste deja el stock por debajo del mínimo, se incluye CU-16. | Si el ajuste deja el stock por debajo del mínimo, se incluye CU-16. |
+| Poscondiciones: | Poscondiciones: |
+| La cantidad disponible queda actualizada. | La cantidad disponible queda actualizada. |
+
+
+| ID: | CU-16 |
+| Nombre: | Generar solicitud de reposición |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| El sistema genera automáticamente una solicitud de reposición cuando el stock cae por debajo del mínimo configurado. | El sistema genera automáticamente una solicitud de reposición cuando el stock cae por debajo del mínimo configurado. |
+| Actores: | Actores: |
+| Ninguno (caso de uso interno, incluido desde CU-14 y CU-15) | Ninguno (caso de uso interno, incluido desde CU-14 y CU-15) |
+| Precondiciones: | Precondiciones: |
+| Debe existir un umbral mínimo configurado para el repuesto. | Debe existir un umbral mínimo configurado para el repuesto. |
+| Flujo Normal: | Flujo Normal: |
+| 1. El sistema detecta que la cantidad es menor al mínimo. 2. Genera la solicitud con el repuesto y proveedor asociado. 3. Notifica al responsable de gestionar la compra. | 1. El sistema detecta que la cantidad es menor al mínimo. 2. Genera la solicitud con el repuesto y proveedor asociado. 3. Notifica al responsable de gestionar la compra. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el repuesto no tiene proveedor asociado, el sistema genera la solicitud sin proveedor y pide asignarlo manualmente. | Si el repuesto no tiene proveedor asociado, el sistema genera la solicitud sin proveedor y pide asignarlo manualmente. |
+| Poscondiciones: | Poscondiciones: |
+| Queda registrada una solicitud de reposición pendiente. | Queda registrada una solicitud de reposición pendiente. |
+
+
+| ID: | CU-17 |
+| Nombre: | Registrar proveedor |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite registrar un nuevo proveedor de repuestos o servicios de mantenimiento. | Permite registrar un nuevo proveedor de repuestos o servicios de mantenimiento. |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| El administrador debe tener permisos sobre el módulo de proveedores. | El administrador debe tener permisos sobre el módulo de proveedores. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona “Registrar proveedor”. 2. El sistema muestra el formulario (razón social, contacto, productos/servicios, condiciones). 3. Ingresa los datos. 4. El sistema guarda el proveedor. | 1. Selecciona “Registrar proveedor”. 2. El sistema muestra el formulario (razón social, contacto, productos/servicios, condiciones). 3. Ingresa los datos. 4. El sistema guarda el proveedor. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si el proveedor ya existe con el mismo NIT, el sistema rechaza el registro y sugiere actualizarlo. | Si el proveedor ya existe con el mismo NIT, el sistema rechaza el registro y sugiere actualizarlo. |
+| Poscondiciones: | Poscondiciones: |
+| El proveedor queda disponible en el sistema. | El proveedor queda disponible en el sistema. |
+
+
+| ID: | CU-18 |
+| Nombre: | Consultar proveedor |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite consultar la información y el historial de un proveedor registrado. | Permite consultar la información y el historial de un proveedor registrado. |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| Debe existir al menos un proveedor registrado. | Debe existir al menos un proveedor registrado. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona “Consultar proveedor”. 2. El sistema muestra el listado. 3. Selecciona un proveedor. 4. El sistema muestra contacto, condiciones y repuestos asociados. | 1. Selecciona “Consultar proveedor”. 2. El sistema muestra el listado. 3. Selecciona un proveedor. 4. El sistema muestra contacto, condiciones y repuestos asociados. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si no se encuentra el proveedor, el sistema muestra “sin resultados”. | Si no se encuentra el proveedor, el sistema muestra “sin resultados”. |
+| Poscondiciones: | Poscondiciones: |
+| El administrador visualiza la información del proveedor. | El administrador visualiza la información del proveedor. |
+
+
+| ID: | CU-19 |
+| Nombre: | Actualizar datos de proveedor |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite modificar la información de contacto o condiciones comerciales de un proveedor existente. | Permite modificar la información de contacto o condiciones comerciales de un proveedor existente. |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| El proveedor debe estar previamente registrado. | El proveedor debe estar previamente registrado. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona el proveedor a actualizar. 2. El sistema muestra los datos actuales. 3. Modifica la información necesaria. 4. El sistema guarda los cambios. | 1. Selecciona el proveedor a actualizar. 2. El sistema muestra los datos actuales. 3. Modifica la información necesaria. 4. El sistema guarda los cambios. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si los datos no cumplen el formato requerido (correo/teléfono inválido), el sistema solicita corregirlos. | Si los datos no cumplen el formato requerido (correo/teléfono inválido), el sistema solicita corregirlos. |
+| Poscondiciones: | Poscondiciones: |
+| Los datos del proveedor quedan actualizados. | Los datos del proveedor quedan actualizados. |
+
+
+| ID: | CU-20 |
+| Nombre: | Eliminar proveedor |
+| Autor: | Emanuel Campo, Daniel Rodríguez |
+| Fecha: | 12/09/2026 |
+| Descripción: | Descripción: |
+| Permite eliminar o inactivar un proveedor que ya no forma parte de la red de suministro. | Permite eliminar o inactivar un proveedor que ya no forma parte de la red de suministro. |
+| Actores: | Actores: |
+| Administrador del sistema | Administrador del sistema |
+| Precondiciones: | Precondiciones: |
+| El proveedor no debe tener repuestos o solicitudes de reposición activas asociadas. | El proveedor no debe tener repuestos o solicitudes de reposición activas asociadas. |
+| Flujo Normal: | Flujo Normal: |
+| 1. Selecciona el proveedor a eliminar. 2. El sistema solicita confirmación. 3. Confirma la eliminación. 4. El sistema inactiva/elimina el proveedor. | 1. Selecciona el proveedor a eliminar. 2. El sistema solicita confirmación. 3. Confirma la eliminación. 4. El sistema inactiva/elimina el proveedor. |
+| Flujo Alternativo: | Flujo Alternativo: |
+| Si tiene repuestos o solicitudes activas, el sistema impide la eliminación y sugiere inactivarlo. | Si tiene repuestos o solicitudes activas, el sistema impide la eliminación y sugiere inactivarlo. |
+| Poscondiciones: | Poscondiciones: |
+| El proveedor queda eliminado o inactivado. | El proveedor queda eliminado o inactivado. |
+
+[List Paragraph] Modelo basado en historias de usuarios
+[List Paragraph] Descripción: Historias de usuarios
+
+| Identificación: HU-01 | Identificación: HU-01 |
+| Nombre de historia: Registrar equipo biomédico | Nombre de historia: Registrar equipo biomédico |
+| Módulo: Gestión de activos |  |
+| Prioridad: Alta | Prioridad: Alta |
+| Descripción: Como técnico de mantenimiento biomédico, necesito registrar un nuevo equipo biomédico con su hoja de vida, con la finalidad de contar con información centralizada y trazable de cada activo. | Descripción: Como técnico de mantenimiento biomédico, necesito registrar un nuevo equipo biomédico con su hoja de vida, con la finalidad de contar con información centralizada y trazable de cada activo. |
+| Criterios de aceptación: - El sistema permite ingresar nombre, marca, modelo, serie, ubicación y fecha de adquisición del equipo. - El sistema valida que los campos obligatorios estén diligenciados antes de guardar el registro. - El equipo registrado queda disponible para asociarse a órdenes de trabajo. | Criterios de aceptación: - El sistema permite ingresar nombre, marca, modelo, serie, ubicación y fecha de adquisición del equipo. - El sistema valida que los campos obligatorios estén diligenciados antes de guardar el registro. - El equipo registrado queda disponible para asociarse a órdenes de trabajo. |
+
+
+| Identificación: HU-02 | Identificación: HU-02 |
+| Nombre de historia: Consultar hoja de vida del equipo | Nombre de historia: Consultar hoja de vida del equipo |
+| Módulo: Gestión de activos |  |
+| Prioridad: Media | Prioridad: Media |
+| Descripción: Como técnico de mantenimiento biomédico, necesito consultar la hoja de vida de un equipo, con la finalidad de conocer su historial de intervenciones antes de una nueva intervención. | Descripción: Como técnico de mantenimiento biomédico, necesito consultar la hoja de vida de un equipo, con la finalidad de conocer su historial de intervenciones antes de una nueva intervención. |
+| Criterios de aceptación: - El sistema muestra el historial completo de mantenimientos preventivos y correctivos del equipo. - El sistema permite filtrar el historial por fecha o tipo de mantenimiento. | Criterios de aceptación: - El sistema muestra el historial completo de mantenimientos preventivos y correctivos del equipo. - El sistema permite filtrar el historial por fecha o tipo de mantenimiento. |
+
+
+| Identificación: HU-03 | Identificación: HU-03 |
+| Nombre de historia: Crear orden de trabajo | Nombre de historia: Crear orden de trabajo |
+| Módulo: Gestión de mantenimiento |  |
+| Prioridad: Alta | Prioridad: Alta |
+| Descripción: Como técnico de mantenimiento biomédico, necesito crear una orden de trabajo para un equipo, con la finalidad de registrar y hacer seguimiento a una intervención de mantenimiento. | Descripción: Como técnico de mantenimiento biomédico, necesito crear una orden de trabajo para un equipo, con la finalidad de registrar y hacer seguimiento a una intervención de mantenimiento. |
+| Criterios de aceptación: - El sistema permite asociar la orden de trabajo a un equipo y a un tipo de mantenimiento (preventivo/correctivo). - El sistema permite asignar un responsable y una fecha estimada de ejecución. - El sistema permite cerrar la orden de trabajo registrando las observaciones de la intervención. | Criterios de aceptación: - El sistema permite asociar la orden de trabajo a un equipo y a un tipo de mantenimiento (preventivo/correctivo). - El sistema permite asignar un responsable y una fecha estimada de ejecución. - El sistema permite cerrar la orden de trabajo registrando las observaciones de la intervención. |
+
+
+| Identificación: HU-04 | Identificación: HU-04 |
+| Nombre de historia: Programar mantenimiento preventivo | Nombre de historia: Programar mantenimiento preventivo |
+| Módulo: Gestión de mantenimiento |  |
+| Prioridad: Alta | Prioridad: Alta |
+| Descripción: Como técnico de mantenimiento biomédico, necesito programar la periodicidad del mantenimiento preventivo de un equipo, con la finalidad de anticipar fallas y evitar la indisponibilidad del equipo. | Descripción: Como técnico de mantenimiento biomédico, necesito programar la periodicidad del mantenimiento preventivo de un equipo, con la finalidad de anticipar fallas y evitar la indisponibilidad del equipo. |
+| Criterios de aceptación: - El sistema permite definir una frecuencia de mantenimiento preventivo por equipo. - El sistema genera automáticamente la próxima fecha de mantenimiento según la periodicidad definida. | Criterios de aceptación: - El sistema permite definir una frecuencia de mantenimiento preventivo por equipo. - El sistema genera automáticamente la próxima fecha de mantenimiento según la periodicidad definida. |
+
+
+| Identificación: HU-05 | Identificación: HU-05 |
+| Nombre de historia: Recibir alerta de mantenimiento | Nombre de historia: Recibir alerta de mantenimiento |
+| Módulo: Notificaciones |  |
+| Prioridad: Alta | Prioridad: Alta |
+| Descripción: Como técnico de mantenimiento biomédico, necesito recibir una alerta cuando se aproxime la fecha de un mantenimiento preventivo, con la finalidad de ejecutar la intervención a tiempo y evitar fallas críticas. | Descripción: Como técnico de mantenimiento biomédico, necesito recibir una alerta cuando se aproxime la fecha de un mantenimiento preventivo, con la finalidad de ejecutar la intervención a tiempo y evitar fallas críticas. |
+| Criterios de aceptación: - El sistema envía una notificación automática con un margen configurable de días previos a la fecha programada. - La notificación incluye el equipo, el tipo de mantenimiento y la fecha programada. | Criterios de aceptación: - El sistema envía una notificación automática con un margen configurable de días previos a la fecha programada. - La notificación incluye el equipo, el tipo de mantenimiento y la fecha programada. |
+
+
+| Identificación: HU-06 | Identificación: HU-06 |
+| Nombre de historia: Gestionar inventario de repuestos | Nombre de historia: Gestionar inventario de repuestos |
+| Módulo: Inventario |  |
+| Prioridad: Media | Prioridad: Media |
+| Descripción: Como técnico de mantenimiento biomédico, necesito consultar y actualizar el inventario de repuestos, con la finalidad de verificar la disponibilidad antes de ejecutar una intervención. | Descripción: Como técnico de mantenimiento biomédico, necesito consultar y actualizar el inventario de repuestos, con la finalidad de verificar la disponibilidad antes de ejecutar una intervención. |
+| Criterios de aceptación: - El sistema permite registrar entradas y salidas de repuestos del inventario. - El sistema alerta cuando el stock de un repuesto se encuentra por debajo del mínimo definido. | Criterios de aceptación: - El sistema permite registrar entradas y salidas de repuestos del inventario. - El sistema alerta cuando el stock de un repuesto se encuentra por debajo del mínimo definido. |
+
+
+| Identificación: HU-07 | Identificación: HU-07 |
+| Nombre de historia: Gestionar proveedores | Nombre de historia: Gestionar proveedores |
+| Módulo: Inventario |  |
+| Prioridad: Media | Prioridad: Media |
+| Descripción: Como administrador del sistema, necesito registrar y actualizar la información de los proveedores de repuestos, con la finalidad de contar con datos de contacto y condiciones de suministro actualizadas. | Descripción: Como administrador del sistema, necesito registrar y actualizar la información de los proveedores de repuestos, con la finalidad de contar con datos de contacto y condiciones de suministro actualizadas. |
+| Criterios de aceptación: - El sistema permite registrar nombre, contacto, repuestos que suministra y condiciones de garantía del proveedor. - El sistema permite asociar un proveedor a un repuesto del inventario. | Criterios de aceptación: - El sistema permite registrar nombre, contacto, repuestos que suministra y condiciones de garantía del proveedor. - El sistema permite asociar un proveedor a un repuesto del inventario. |
+
+
+| Identificación: HU-08 | Identificación: HU-08 |
+| Nombre de historia: Administrar usuarios y roles | Nombre de historia: Administrar usuarios y roles |
+| Módulo: Administración del sistema |  |
+| Prioridad: Alta | Prioridad: Alta |
+| Descripción: Como administrador del sistema, necesito gestionar los usuarios y sus roles de acceso, con la finalidad de garantizar que cada perfil acceda únicamente a las funcionalidades correspondientes. | Descripción: Como administrador del sistema, necesito gestionar los usuarios y sus roles de acceso, con la finalidad de garantizar que cada perfil acceda únicamente a las funcionalidades correspondientes. |
+| Criterios de aceptación: - El sistema permite crear, editar y desactivar usuarios. - El sistema restringe el acceso a los módulos según el rol asignado (técnico, administrador, gerencia). | Criterios de aceptación: - El sistema permite crear, editar y desactivar usuarios. - El sistema restringe el acceso a los módulos según el rol asignado (técnico, administrador, gerencia). |
+
+
+| Identificación: HU-09 | Identificación: HU-09 |
+| Nombre de historia: Generar reportes e indicadores de gestión | Nombre de historia: Generar reportes e indicadores de gestión |
+| Módulo: Reportes |  |
+| Prioridad: Alta | Prioridad: Alta |
+| Descripción: Como gerente o administrador hospitalario, necesito consultar reportes e indicadores de gestión del mantenimiento, con la finalidad de apoyar la toma de decisiones administrativas y presupuestales. | Descripción: Como gerente o administrador hospitalario, necesito consultar reportes e indicadores de gestión del mantenimiento, con la finalidad de apoyar la toma de decisiones administrativas y presupuestales. |
+| Criterios de aceptación: - El sistema genera indicadores de MTTR, MTBF y cumplimiento de cronogramas de mantenimiento. - El sistema permite exportar los reportes en formato PDF. | Criterios de aceptación: - El sistema genera indicadores de MTTR, MTBF y cumplimiento de cronogramas de mantenimiento. - El sistema permite exportar los reportes en formato PDF. |
+
+
+| Identificación: HU-10 | Identificación: HU-10 |
+| Nombre de historia: Exportar reporte de auditoría | Nombre de historia: Exportar reporte de auditoría |
+| Módulo: Reportes |  |
+| Prioridad: Media | Prioridad: Media |
+| Descripción: Como gerente o administrador hospitalario, necesito exportar un reporte de trazabilidad de mantenimiento, con la finalidad de contar con evidencia documental para procesos de auditoría y habilitación. | Descripción: Como gerente o administrador hospitalario, necesito exportar un reporte de trazabilidad de mantenimiento, con la finalidad de contar con evidencia documental para procesos de auditoría y habilitación. |
+| Criterios de aceptación: - El sistema permite filtrar el reporte por equipo, rango de fechas y tipo de mantenimiento. - El reporte exportado conserva el formato y la información de forma íntegra. | Criterios de aceptación: - El sistema permite filtrar el reporte por equipo, rango de fechas y tipo de mantenimiento. - El reporte exportado conserva el formato y la información de forma íntegra. |
+
+[List Paragraph] Lista product backlog
+
+| ID | Enunciado de la historia | Estado | Dimensión / Esfuerzo |
+| HU-01 | Como técnico de mantenimiento biomédico, necesito registrar un equipo biomédico con su hoja de vida, con la finalidad de contar con información centralizada y trazable de cada activo. | Por hacer | 3 |
+| HU-02 | Como técnico de mantenimiento biomédico, necesito consultar la hoja de vida de un equipo, con la finalidad de conocer su historial antes de una nueva intervención. | Por hacer | 2 |
+| HU-03 | Como técnico de mantenimiento biomédico, necesito crear una orden de trabajo, con la finalidad de registrar y hacer seguimiento a una intervención de mantenimiento. | Por hacer | 5 |
+| HU-04 | Como técnico de mantenimiento biomédico, necesito programar la periodicidad del mantenimiento preventivo, con la finalidad de anticipar fallas y evitar la indisponibilidad del equipo. | Por hacer | 5 |
+| HU-05 | Como técnico de mantenimiento biomédico, necesito recibir una alerta de mantenimiento preventivo próximo, con la finalidad de ejecutar la intervención a tiempo. | Por hacer | 3 |
+| HU-06 | Como técnico de mantenimiento biomédico, necesito gestionar el inventario de repuestos, con la finalidad de verificar la disponibilidad antes de una intervención. | Por hacer | 3 |
+| HU-07 | Como administrador del sistema, necesito gestionar los proveedores de repuestos, con la finalidad de contar con datos de contacto y condiciones de suministro actualizadas. | Por hacer | 2 |
+| HU-08 | Como administrador del sistema, necesito administrar usuarios y roles, con la finalidad de garantizar accesos adecuados a cada perfil. | Por hacer | 5 |
+| HU-09 | Como gerente o administrador hospitalario, necesito consultar reportes e indicadores de gestión, con la finalidad de apoyar la toma de decisiones. | Por hacer | 8 |
+| HU-10 | Como gerente o administrador hospitalario, necesito exportar un reporte de trazabilidad, con la finalidad de contar con evidencia para auditorías. | Por hacer | 3 |
+
+[List Paragraph] Requisitos funcionales del sistema
+
+| Identificador | RF-01 |
+| Nombre | Registrar activo hospitalario |
+| Descripción | El sistema deberá permitir registrar los activos hospitalarios (equipos biomédicos e infraestructura) con su respectiva hoja de vida (nombre, marca, modelo, serie, ubicación y fecha de adquisición). |
+| Actor | Técnico / Ingeniero de mantenimiento biomédico. |
+| Prioridad | Alta |
+| Criterios de aceptación | - El sistema exige el diligenciamiento de los campos obligatorios antes de guardar el registro. - El activo registrado queda disponible para asociarse a órdenes de trabajo y a la programación de mantenimiento preventivo. |
+
+
+| Identificador | RF-02 |
+| Nombre | Consultar y actualizar hoja de vida del equipo |
+| Descripción | El sistema deberá permitir consultar y actualizar la hoja de vida de cada activo hospitalario, incluyendo su historial de intervenciones. |
+| Actor | Técnico / Ingeniero de mantenimiento biomédico; Gerencia / Administración hospitalaria (consulta). |
+| Prioridad | Media |
+| Criterios de aceptación | - El sistema muestra el historial completo de mantenimientos preventivos y correctivos del equipo. - El sistema permite filtrar el historial por fecha o tipo de mantenimiento. |
+
+
+| Identificador | RF-03 |
+| Nombre | Gestionar orden de trabajo |
+| Descripción | El sistema deberá permitir crear, asignar y cerrar órdenes de trabajo de mantenimiento preventivo y correctivo asociadas a un activo hospitalario. |
+| Actor | Técnico / Ingeniero de mantenimiento biomédico. |
+| Prioridad | Alta |
+| Criterios de aceptación | - El sistema permite asociar la orden de trabajo a un equipo y a un tipo de mantenimiento (preventivo/correctivo). - El sistema permite cerrar la orden de trabajo registrando las observaciones de la intervención. |
+
+
+| Identificador | RF-04 |
+| Nombre | Programar mantenimiento preventivo |
+| Descripción | El sistema deberá permitir programar mantenimientos preventivos según la periodicidad definida para cada equipo. |
+| Actor | Técnico / Ingeniero de mantenimiento biomédico. |
+| Prioridad | Alta |
+| Criterios de aceptación | - El sistema permite definir una frecuencia de mantenimiento preventivo por equipo. - El sistema calcula automáticamente la próxima fecha de mantenimiento según la periodicidad definida. |
+
+
+| Identificador | RF-05 |
+| Nombre | Generar alertas y notificaciones de mantenimiento |
+| Descripción | El sistema deberá generar alertas y notificaciones automáticas ante el vencimiento o la proximidad de un mantenimiento preventivo. |
+| Actor | Sistema de notificaciones; Técnico / Ingeniero de mantenimiento biomédico (receptor). |
+| Prioridad | Alta |
+| Criterios de aceptación | - El sistema envía la notificación con un margen configurable de días previos a la fecha programada. - La notificación incluye el equipo, el tipo de mantenimiento y la fecha programada. |
+
+
+| Identificador | RF-06 |
+| Nombre | Gestionar inventario de repuestos |
+| Descripción | El sistema deberá permitir registrar y consultar el inventario de repuestos disponibles. |
+| Actor | Técnico / Ingeniero de mantenimiento biomédico. |
+| Prioridad | Media |
+| Criterios de aceptación | - El sistema permite registrar entradas y salidas de repuestos del inventario. - El sistema alerta cuando el stock de un repuesto se encuentra por debajo del mínimo definido. |
+
+
+| Identificador | RF-07 |
+| Nombre | Gestionar proveedores |
+| Descripción | El sistema deberá permitir registrar y consultar la información de los proveedores de repuestos y servicios técnicos. |
+| Actor | Administrador del sistema (Jefatura de la Oficina de TICs). |
+| Prioridad | Media |
+| Criterios de aceptación | - El sistema permite registrar nombre, contacto, repuestos suministrados y condiciones de garantía del proveedor. - El sistema permite asociar un proveedor a un repuesto del inventario. |
+
+
+| Identificador | RF-08 |
+| Nombre | Generar reportes e indicadores de gestión (KPIs) |
+| Descripción | El sistema deberá generar reportes e indicadores de gestión, tales como MTTR, MTBF y cumplimiento de cronogramas. |
+| Actor | Gerencia / Administración hospitalaria; Administrador del sistema. |
+| Prioridad | Alta |
+| Criterios de aceptación | - El sistema calcula los indicadores a partir de las órdenes de trabajo cerradas. - El sistema permite seleccionar el periodo sobre el cual se calculan los indicadores. |
+
+
+| Identificador | RF-09 |
+| Nombre | Autenticación y control de acceso por roles |
+| Descripción | El sistema deberá permitir la autenticación de usuarios y el control de acceso según el rol asignado (técnico, administrador, gerencia). |
+| Actor | Administrador del sistema (Jefatura de TICs); todos los usuarios (autenticación). |
+| Prioridad | Alta |
+| Criterios de aceptación | - El sistema rechaza el acceso con credenciales inválidas. - El sistema restringe las funcionalidades disponibles según el rol del usuario autenticado. |
+
+
+| Identificador | RF-10 |
+| Nombre | Consultar reportes consolidados |
+| Descripción | El sistema deberá permitir a la administración hospitalaria consultar reportes consolidados de mantenimiento. |
+| Actor | Gerencia / Administración hospitalaria. |
+| Prioridad | Media |
+| Criterios de aceptación | - El sistema presenta los indicadores de gestión del periodo consultado. - El sistema permite filtrar el reporte por tipo de activo o de mantenimiento. |
+
+
+| Identificador | RF-11 |
+| Nombre | Registrar trazabilidad de intervenciones |
+| Descripción | El sistema deberá registrar la trazabilidad completa de las intervenciones realizadas sobre cada equipo. |
+| Actor | Técnico / Ingeniero de mantenimiento biomédico (registra); Gerencia (consulta). |
+| Prioridad | Alta |
+| Criterios de aceptación | - Cada intervención queda asociada de forma permanente al equipo y a la orden de trabajo correspondiente. - El historial de intervenciones no puede eliminarse, solo consultarse. |
+
+
+| Identificador | RF-12 |
+| Nombre | Exportar reporte de auditoría en PDF |
+| Descripción | El sistema deberá permitir exportar los reportes de mantenimiento en formato PDF como evidencia para auditorías. |
+| Actor | Gerencia / Administración hospitalaria. |
+| Prioridad | Media |
+| Criterios de aceptación | - El reporte exportado conserva el formato y la información de forma íntegra. - El sistema permite filtrar el reporte antes de exportarlo (por equipo, fecha o tipo de mantenimiento). |
+
+[List Paragraph] Requisitos no funcionales del sistema
+Defina los requisitos considerando las características de calidad dada por la ISO 25000
+
+| Identificador | RNF-01 |
+| Nombre | Eficiencia de desempeño (tiempo de respuesta) |
+| Descripción | El sistema deberá responder a las consultas de hoja de vida, órdenes de trabajo y reportes en un tiempo no mayor a 3 segundos bajo condiciones normales de operación. |
+| Clasificación | Eficiencia de desempeño (Performance efficiency) - ISO 25000. |
+
+
+| Identificador | RNF-02 |
+| Nombre | Usabilidad |
+| Descripción | La interfaz del sistema deberá ser intuitiva, de manera que un usuario sin capacitación previa pueda registrar un activo o una orden de trabajo en menos de 5 minutos. |
+| Clasificación | Usabilidad (Usability) - ISO 25000. |
+
+
+| Identificador | RNF-03 |
+| Nombre | Seguridad de la información |
+| Descripción | El sistema deberá cifrar las contraseñas de los usuarios y las comunicaciones mediante HTTPS, y deberá registrar (log) los accesos y las acciones críticas realizadas por cada usuario. |
+| Clasificación | Seguridad (Security) - ISO 25000. |
+
+
+| Identificador | RNF-04 |
+| Nombre | Confiabilidad y disponibilidad |
+| Descripción | El sistema deberá estar disponible al menos el 99% del tiempo en el horario laboral de la unidad, minimizando las interrupciones que afecten el registro de mantenimientos. |
+| Clasificación | Fiabilidad (Reliability) - ISO 25000. |
+
+
+| Identificador | RNF-05 |
+| Nombre | Mantenibilidad |
+| Descripción | El sistema deberá tener una arquitectura modular, de forma que la incorporación de nuevas funcionalidades (por ejemplo, integración con sensores IoT) no requiera modificar los módulos existentes. |
+| Clasificación | Mantenibilidad (Maintainability) - ISO 25000. |
+
+
+| Identificador | RNF-06 |
+| Nombre | Compatibilidad |
+| Descripción | El sistema deberá ser compatible con los navegadores web más utilizados (Chrome, Firefox, Edge) en sus versiones vigentes, y deberá permitir la futura integración con el sistema de información hospitalario (HIS) existente. |
+| Clasificación | Compatibilidad (Compatibility) - ISO 25000. |
+
+
+| Identificador | RNF-07 |
+| Nombre | Portabilidad |
+| Descripción | El sistema deberá poder desplegarse en diferentes entornos de servidor (on-premise o en la nube) sin requerir cambios sustanciales en el código fuente. |
+| Clasificación | Portabilidad (Portability) - ISO 25000. |
+
+[List Paragraph] Requisitos de interfaz externa
+[List Paragraph] Definir requisitos de:
+Interfaces de usuario
+[List Paragraph] RIU-01: El sistema deberá proporcionar una interfaz web responsiva, accesible desde navegadores de escritorio y dispositivos móviles, que permita al personal técnico y administrativo registrar activos, gestionar órdenes de trabajo y consultar reportes mediante formularios, tablas y paneles de indicadores, sin requerir instalación de software adicional.
+[List Paragraph] RIU-02: El sistema deberá presentar un panel de indicadores (dashboard) con gráficos y semáforos de estado (verde/amarillo/rojo) que permitan a la gerencia visualizar de un vistazo el cumplimiento de los cronogramas de mantenimiento y el estado general de los equipos biomédicos.
+Interfaces de hardware
+[List Paragraph] RIH-01: El sistema deberá ser compatible con el hardware de cómputo (computadores de escritorio, portátiles y/o tablets) ya disponible en la Oficina de TICs de la unidad, y deberá permitir la conexión con impresoras estándar (red o USB) para la impresión de órdenes de trabajo y reportes, sin requerir hardware especializado adicional en esta primera versión.
+[List Paragraph] RIH-02: El sistema deberá permitir la lectura de códigos QR mediante la cámara de dispositivos móviles, con el fin de que el técnico identifique rápidamente un equipo biomédico y acceda a su hoja de vida durante una intervención en sitio.
+Interfaces de software
+[List Paragraph] RIS-01: El sistema deberá integrarse con el sistema de información hospitalario (HIS) de la Unidad Pediátrica Simón Bolívar IPS S.A.S. mediante una API REST, con el fin de sincronizar la información de los equipos biomédicos y evitar la duplicidad de registros entre ambos sistemas.
+[List Paragraph] RIS-02: El sistema deberá integrarse con el servicio de directorio institucional (LDAP/Active Directory) de la Unidad Pediátrica Simón Bolívar IPS S.A.S. para la autenticación de usuarios, evitando la duplicación de credenciales entre el aplicativo y otros sistemas de la entidad.
+Interfaces de comunicación
+[List Paragraph] RIC-01: El sistema deberá utilizar el protocolo HTTPS para todas las comunicaciones entre el cliente (navegador) y el servidor, garantizando la confidencialidad e integridad de la información, y deberá enviar las alertas de mantenimiento preventivo al personal técnico mediante correo electrónico (protocolo SMTP).
+[List Paragraph] RIC-02: El sistema deberá permitir el envío de notificaciones adicionales por mensajería instantánea (por ejemplo, WhatsApp Business API) al personal técnico en campo, como canal complementario al correo electrónico para alertas de mantenimiento crítico.
+[List Paragraph] Otros requerimientos
+[List Paragraph] Requerimientos no cubiertos en ninguna otra sección del documento de requerimientos de software, por ejemplo: Requerimientos de bases de datos, internacionalización, legales y objetivos de reúso de componentes de software.
+Requisitos de base de datos: El sistema deberá emplear un motor de base de datos relacional que garantice la integridad referencial entre los activos hospitalarios, las órdenes de trabajo, el inventario de repuestos y los usuarios del sistema.
+Requisitos de internacionalización: El sistema se implementará inicialmente en idioma español para la sede de la Unidad Pediátrica Simón Bolívar IPS S.A.S. en Valledupar; no se contemplan requisitos de internacionalización en esta primera versión, aunque la arquitectura deberá permitir incorporar otros idiomas en versiones futuras.
+Requisitos legales: El sistema deberá cumplir con la normativa colombiana de protección de datos personales (Ley 1581 de 2012) en el tratamiento de la información de los usuarios y de los datos relacionados con los equipos biomédicos.
+Objetivos de reúso de componentes de software: El desarrollo del sistema deberá priorizar el uso de librerías y componentes de software libre ya validados por el equipo de desarrollo, con el fin de reducir los tiempos de implementación durante la práctica académica.
+[List Paragraph] Trazabilidad de los requisitos
+
+| Requisito | Caso de uso relacionado | Historia de usuario relacionada |
+| RF-01 | UC1 - Registrar activo hospitalario | HU-01 - Registrar equipo biomédico |
+| RF-02 | UC2 - Consultar hoja de vida del equipo | HU-02 - Consultar hoja de vida del equipo |
+| RF-03 | UC3 - Gestionar orden de trabajo | HU-03 - Crear orden de trabajo |
+| RF-04 | UC4 - Programar mantenimiento preventivo | HU-04 - Programar mantenimiento preventivo |
+| RF-05 | UC5 - Enviar alerta de mantenimiento | HU-05 - Recibir alerta de mantenimiento |
+| RF-06 | UC6 - Gestionar inventario de repuestos | HU-06 - Gestionar inventario de repuestos |
+| RF-07 | UC7 - Gestionar proveedores | HU-07 - Gestionar proveedores |
+| RF-08 | UC9 - Generar reportes e indicadores (KPIs) | HU-09 - Generar reportes e indicadores de gestión |
+| RF-09 | UC8 - Administrar usuarios y roles | HU-08 - Administrar usuarios y roles |
+| RF-10 | UC10 - Consultar reportes de gestión | HU-09 - Generar reportes e indicadores de gestión (derivada) |
+| RF-11 | UC3 - Gestionar orden de trabajo (derivado) | HU-03 - Crear orden de trabajo (se alimenta del cierre) |
+| RF-12 | UC9 / UC10 - Reportes e indicadores (derivado) | HU-10 - Exportar reporte de auditoría |
+
+[List Paragraph] Glosario
+API: Interfaz de programación de aplicaciones que permite la comunicación e integración entre el aplicativo y otros sistemas, como el HIS de la unidad.
+Backlog (Product Backlog): Lista priorizada de historias de usuario e ítems pendientes de desarrollo del proyecto.
+Caso de uso (UC): Descripción de una interacción entre un actor y el sistema para lograr un objetivo específico.
+HIS (Hospital Information System): Sistema de información hospitalario existente en la Unidad Pediátrica Simón Bolívar IPS S.A.S. con el cual el aplicativo deberá interoperar.
+Historia de Usuario (HU): Descripción breve, en lenguaje natural, de una funcionalidad requerida por un usuario, redactada en el formato “Como un [rol], necesito [funcionalidad], con la finalidad de [razón]”.
+Hoja de vida (del equipo): Registro histórico de la información y las intervenciones de mantenimiento realizadas sobre un activo hospitalario a lo largo de su vida útil.
+IPS (Institución Prestadora de Servicios de Salud): Entidad habilitada para prestar servicios de salud; en este proyecto corresponde a la Unidad Pediátrica Simón Bolívar IPS S.A.S.
+ISO 25000: Familia de normas internacionales que define los criterios de calidad de un producto de software, utilizada como referencia para los requisitos no funcionales del sistema.
+KPI (Key Performance Indicator): Indicador clave utilizado para medir el desempeño del proceso de mantenimiento hospitalario.
+MTBF (Mean Time Between Failures): Tiempo medio entre fallas; indicador que mide el tiempo promedio transcurrido entre una falla y la siguiente en un mismo equipo.
+MTTR (Mean Time To Repair): Tiempo medio de reparación; indicador que mide el tiempo promedio requerido para reparar un equipo tras una falla.
+RF (Requisito Funcional): Requisito que describe una función o comportamiento que el sistema debe ejecutar.
+RNF (Requisito No Funcional): Requisito que describe una característica de calidad del sistema (desempeño, seguridad, usabilidad, entre otras).
+SRS (Software Requirements Specification): Especificación de requisitos de software; documento que describe de manera completa el comportamiento del sistema a desarrollar, correspondiente al presente documento.
+TICs (Tecnologías de la Información y las Comunicaciones): Conjunto de tecnologías utilizadas para la gestión y transmisión de la información; en este proyecto, la Oficina de TICs es la dependencia donde se desarrolla la práctica académica.
+UML (Unified Modeling Language): Lenguaje Unificado de Modelado utilizado para representar gráficamente los casos de uso del sistema.
+XP (Extreme Programming): Programación Extrema; metodología ágil de desarrollo de software adoptada para la construcción del aplicativo.
+CONCLUSIONES
+El proceso de elicitación de requisitos, apoyado en la técnica de entrevista aplicada a los seis grupos de interesados identificados, permitió confirmar que el mantenimiento de la infraestructura y los equipos biomédicos de la Unidad Pediátrica Simón Bolívar IPS S.A.S. se gestiona actualmente de forma manual y desarticulada, validando la pertinencia del aplicativo propuesto.
+La construcción de la matriz de poder-interés facilitó priorizar el nivel de involucramiento requerido con cada interesado, orientando la estrategia de comunicación durante el levantamiento y la futura validación de los requisitos.
+Los doce requisitos funcionales y los siete requisitos no funcionales (basados en ISO 25000) definidos en este documento, junto con los requisitos de interfaz externa y los demás requerimientos identificados, constituyen una base sólida y trazable para las siguientes fases de diseño y desarrollo del aplicativo, en concordancia con los objetivos específicos de la práctica académica y con la metodología Extreme Programming (XP) adoptada.
+La matriz de trazabilidad de la sección 4 evidencia que cada requisito funcional tiene origen en un caso de uso y una historia de usuario concretos, lo que reduce el riesgo de vacíos o de funcionalidades no sustentadas en una necesidad real de los interesados.
+Este documento de requisitos se constituye en un insumo formal para las siguientes etapas de la práctica académica (diseño de la arquitectura y desarrollo de los módulos funcionales), y podrá ser ajustado conforme surjan nuevos hallazgos durante dichas etapas.
+REFERENCIAS
+Beck, K. (1999). Extreme Programming Explained: Embrace Change. Addison-Wesley.
+International Organization for Standardization. (2014). ISO/IEC 25000:2014 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE). ISO.
+International Organization for Standardization / IEEE. (2018). ISO/IEC/IEEE 29148:2018 — Systems and software engineering — Life cycle processes — Requirements engineering. ISO/IEEE.
+Object Management Group. (2017). Unified Modeling Language (UML) Specification, Version 2.5.1. OMG.
+Wiegers, K., & Beatty, J. (2013). Software Requirements (3ra ed.). Microsoft Press.

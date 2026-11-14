@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  label String
+  users User[]
+}
+
+model User {
+  id           Int         @id @default(autoincrement())
+  name         String
+  email        String      @unique
+  passwordHash String
+  roleId       Int
+  role         Role        @relation(fields: [roleId], references: [id])
+  active       Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  workOrders   WorkOrder[] @relation("Responsable")
+}
+
+model Equipment {
+  id            Int              @id @default(autoincrement())
+  code          String           @unique
+  name          String
+  brand         String?
+  model         String?
+  serial        String           @unique
+  location      String
+  acquisitionDate DateTime?
+  status        String           @default("operativo")
+  criticality   String           @default("media")
+  notes         String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  history       MaintenanceLog[]
+  workOrders    WorkOrder[]
+  plan          PreventivePlan?
+}
+
+model MaintenanceLog {
+  id          Int        @id @default(autoincrement())
+  equipmentId Int
+  equipment   Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  date        DateTime   @default(now())
+  eventType   String
+  description String
+  workOrderId Int?       @unique
+  workOrder   WorkOrder? @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  createdAt   DateTime   @default(now())
+
+  @@index([equipmentId, date])
+}
+
+model WorkOrder {
+  id            Int             @id @default(autoincrement())
+  code          String          @unique
+  equipmentId   Int
+  equipment     Equipment       @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  type          String
+  priority      String          @default("media")
+  status        String          @default("abierta")
+  responsibleId Int?
+  responsible   User?           @relation("Responsable", fields: [responsibleId], references: [id], onDelete: SetNull)
+  description   String
+  observations  String?
+  openedAt      DateTime        @default(now())
+  dueDate       DateTime?
+  closedAt      DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  log           MaintenanceLog?
+
+  @@index([status, openedAt])
+}
+
+model PreventivePlan {
+  id            Int        @id @default(autoincrement())
+  equipmentId   Int        @unique
+  equipment     Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  frequencyDays Int
+  lastDate      DateTime?
+  nextDate      DateTime
+  active        Boolean    @default(true)
+  notes         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([nextDate])
+}
