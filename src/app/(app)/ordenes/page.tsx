@@ -4,7 +4,9 @@ import {
   AlertTriangle,
   ArrowRight,
   CalendarClock,
+  CheckCircle2,
   ClipboardList,
+  Clock,
   Filter,
   Plus,
   Search,
@@ -25,6 +27,7 @@ import { isStaff, requireUser } from "@/lib/auth";
 import {
   formatDate,
   formatShortDate,
+  orderSla,
   orderStatusMeta,
   orderTypeMeta,
   priorityMeta,
@@ -37,6 +40,7 @@ export const metadata: Metadata = { title: "Órdenes de trabajo" };
 type SearchParams = Promise<{
   estado?: string;
   tipo?: string;
+  prioridad?: string;
   q?: string;
   equipo?: string;
 }>;
@@ -50,12 +54,14 @@ export default async function WorkOrdersPage({
   const params = await searchParams;
   const status = params.estado ?? "";
   const type = params.tipo ?? "";
+  const priority = params.prioridad ?? "";
   const q = (params.q ?? "").trim();
   const equipmentId = Number(params.equipo ?? 0);
 
   const where = {
     ...(status ? { status } : {}),
     ...(type ? { type } : {}),
+    ...(priority ? { priority } : {}),
     ...(Number.isInteger(equipmentId) && equipmentId > 0
       ? { equipmentId }
       : {}),
@@ -108,9 +114,26 @@ export default async function WorkOrdersPage({
   const total = statusCounts.reduce((sum, item) => sum + item._count._all, 0);
 
   const staff = isStaff(user);
-  const hasFilters = Boolean(status || type || q || equipmentId);
+  const hasFilters = Boolean(status || type || priority || q || equipmentId);
   const filteredEquipment =
     equipmentId > 0 ? orders[0]?.equipment ?? null : null;
+
+  const activeOrders = orders.filter((order) =>
+    ["abierta", "en_proceso"].includes(order.status),
+  );
+  const slaOrders = activeOrders
+    .map((order) => ({ order, sla: orderSla(order, now) }))
+    .filter(
+      (item): item is { order: (typeof orders)[number]; sla: NonNullable<ReturnType<typeof orderSla>> } =>
+        item.sla !== null,
+    );
+  const breachedSla = slaOrders.filter((item) => item.sla.breached);
+  const dueSoonSla = slaOrders.filter(
+    (item) => !item.sla.breached && item.sla.hours <= 24,
+  );
+  const nextSla = slaOrders
+    .filter((item) => !item.sla.breached)
+    .sort((a, b) => a.sla.hours - b.sla.hours)[0];
 
   const tabs = [
     { label: "Todas", value: "", count: total },
@@ -132,6 +155,7 @@ export default async function WorkOrdersPage({
     const search = new URLSearchParams();
     if (value) search.set("estado", value);
     if (type) search.set("tipo", type);
+    if (priority) search.set("prioridad", priority);
     if (q) search.set("q", q);
     if (equipmentId > 0) search.set("equipo", String(equipmentId));
     const query = search.toString();
@@ -184,6 +208,52 @@ export default async function WorkOrdersPage({
           hint="Intervenciones registradas en hoja de vida"
         />
       </div>
+
+      {breachedSla.length > 0 ? (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-800">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-rose-500" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold">
+              {breachedSla.length}{" "}
+              {breachedSla.length === 1
+                ? "orden fuera de SLA"
+                : "órdenes fuera de SLA"}
+            </p>
+            <p className="text-[11px] text-rose-600">
+              La más atrasada es {breachedSla[0].order.code} ·{" "}
+              {breachedSla[0].sla.label.toLowerCase()}.
+            </p>
+          </div>
+          <Link
+            href="/ordenes?estado=en_proceso"
+            className="inline-flex h-8 items-center gap-1 rounded-lg bg-rose-600 px-3 text-[11px] font-semibold text-white transition hover:bg-rose-700"
+          >
+            Revisar
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+      ) : (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold">
+              {dueSoonSla.length > 0
+                ? `${dueSoonSla.length} ${
+                    dueSoonSla.length === 1 ? "orden vence" : "órdenes vencen"
+                  } en las próximas 24 horas`
+                : "Órdenes activas dentro del SLA"}
+            </p>
+            <p className="text-[11px] text-emerald-600">
+              {nextSla
+                ? `Próximo vencimiento: ${nextSla.order.code} · ${nextSla.sla.label.toLowerCase()}.`
+                : "No hay órdenes activas con fecha compromiso."}
+            </p>
+          </div>
+          {dueSoonSla.length > 0 ? (
+            <Clock className="h-4 w-4 shrink-0 text-amber-500" />
+          ) : null}
+        </div>
+      )}
 
       {filteredEquipment ? (
         <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-xs text-teal-800">
@@ -238,8 +308,7 @@ export default async function WorkOrdersPage({
           {status ? <input type="hidden" name="estado" value={status} /> : null}
           {equipmentId > 0 ? (
             <input type="hidden" name="equipo" value={equipmentId} />
-          ) : null}
-          <div className="relative min-w-0 flex-1">
+          ) : null}          <div className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="search"
@@ -252,12 +321,23 @@ export default async function WorkOrdersPage({
           <select
             name="tipo"
             defaultValue={type}
-            className={`${selectClass} lg:w-48`}
+            className={`${selectClass} lg:w-44`}
             aria-label="Filtrar por tipo"
           >
             <option value="">Todos los tipos</option>
             <option value="preventivo">Preventivo</option>
             <option value="correctivo">Correctivo</option>
+          </select>
+          <select
+            name="prioridad"
+            defaultValue={priority}
+            className={`${selectClass} lg:w-40`}
+            aria-label="Filtrar por prioridad"
+          >
+            <option value="">Prioridad</option>
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="baja">Baja</option>
           </select>
           <div className="flex gap-2">
             <button

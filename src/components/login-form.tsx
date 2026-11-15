@@ -5,11 +5,15 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
+  HeartPulse,
   Loader2,
   Lock,
   Mail,
   ShieldCheck,
   Sparkles,
+  Stethoscope,
+  UserCog,
+  Users,
 } from "lucide-react";
 import { loginAction, type LoginState } from "@/app/actions/auth";
 
@@ -18,19 +22,45 @@ const demoAccounts = [
     role: "Técnico biomédico",
     name: "Emanuel Campo",
     email: "tecnico@vigia.co",
+    description: "Órdenes, preventivos y hoja de vida",
+    icon: Stethoscope,
+    accent: "text-teal-600",
+    ring: "ring-teal-500/30",
+    chip: "bg-teal-50 text-teal-700",
     dot: "bg-teal-400",
   },
   {
     role: "Administrador",
     name: "Daniel Rodríguez",
     email: "admin@vigia.co",
+    description: "Usuarios, roles y configuración",
+    icon: UserCog,
+    accent: "text-sky-600",
+    ring: "ring-sky-500/30",
+    chip: "bg-sky-50 text-sky-700",
     dot: "bg-sky-400",
   },
   {
     role: "Gerencia",
     name: "Roberto Fernández",
     email: "gerencia@vigia.co",
+    description: "Indicadores, reportes y contratos",
+    icon: HeartPulse,
+    accent: "text-violet-600",
+    ring: "ring-violet-500/30",
+    chip: "bg-violet-50 text-violet-700",
     dot: "bg-violet-400",
+  },
+  {
+    role: "Personal clínico",
+    name: "Laura Méndez",
+    email: "clinico@vigia.co",
+    description: "Reportar fallas asistido por IA",
+    icon: Users,
+    accent: "text-amber-600",
+    ring: "ring-amber-500/30",
+    chip: "bg-amber-50 text-amber-700",
+    dot: "bg-amber-400",
   },
 ];
 
@@ -54,9 +84,72 @@ export function LoginForm() {
           Bienvenido de nuevo
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-slate-500">
-          Ingresa con tu cuenta institucional para gestionar los equipos
-          biomédicos y su mantenimiento.
+          Selecciona tu perfil o ingresa con tu cuenta institucional para
+          gestionar los equipos biomédicos y su mantenimiento.
         </p>
+      </div>
+
+      <div className="mb-6">
+        <div className="mb-2.5 flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-teal-600" />
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            Perfiles de demostración
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {demoAccounts.map((account) => {
+            const selected = email === account.email;
+            return (
+              <button
+                key={account.email}
+                type="button"
+                onClick={() => {
+                  setEmail(account.email);
+                  setPassword("Vigia2026*");
+                }}
+                aria-pressed={selected}
+                className={`group relative rounded-xl border p-3 text-left transition ${
+                  selected
+                    ? `border-transparent bg-white shadow-md ring-2 ${account.ring}`
+                    : "border-slate-200 bg-slate-50/60 hover:border-slate-300 hover:bg-white"
+                }`}
+              >
+                <div className="flex items-start gap-2.5">
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                      selected ? account.chip : "bg-white text-slate-400"
+                    }`}
+                  >
+                    <account.icon className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-1.5">
+                      <span className="block truncate text-xs font-semibold text-slate-800">
+                        {account.role}
+                      </span>
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${account.dot}`}
+                      />
+                    </span>
+                    <span className="mt-0.5 block truncate text-[10px] text-slate-400">
+                      {account.name}
+                    </span>
+                  </span>
+                </div>
+                <p className="mt-2 line-clamp-2 text-[10px] leading-relaxed text-slate-500">
+                  {account.description}
+                </p>
+                <span
+                  className={`absolute right-2.5 top-2.5 text-[9px] font-bold uppercase tracking-wide ${
+                    selected ? account.accent : "text-slate-300"
+                  }`}
+                >
+                  {selected ? "Activo" : ""}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <form action={formAction} className="space-y-5">
@@ -146,57 +239,12 @@ export function LoginForm() {
         </button>
       </form>
 
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-        <div className="mb-3 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-teal-600" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-            Cuentas de demostración
-          </p>
-        </div>
-        <div className="space-y-1.5">
-          {demoAccounts.map((account) => {
-            const selected = email === account.email;
-            return (
-              <button
-                key={account.email}
-                type="button"
-                onClick={() => {
-                  setEmail(account.email);
-                  setPassword("Vigia2026*");
-                }}
-                className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition ${
-                  selected
-                    ? "border-teal-300 bg-white shadow-sm ring-1 ring-teal-500/10"
-                    : "border-transparent hover:border-slate-200 hover:bg-white"
-                }`}
-              >
-                <span className={`h-2 w-2 shrink-0 rounded-full ${account.dot}`} />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-semibold text-slate-700">
-                    {account.role}
-                  </span>
-                  <span className="block truncate text-[11px] text-slate-400">
-                    {account.email}
-                  </span>
-                </span>
-                <span
-                  className={`text-[11px] font-semibold ${
-                    selected ? "text-teal-600" : "text-slate-400"
-                  }`}
-                >
-                  {selected ? "Seleccionada" : "Usar"}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-3 border-t border-slate-200 pt-3 text-[11px] text-slate-400">
-          Contraseña para todas las cuentas:{" "}
-          <span className="font-mono font-semibold text-slate-600">
-            Vigia2026*
-          </span>
-        </p>
-      </div>
+      <p className="mt-5 text-center text-[11px] text-slate-400">
+        Contraseña para todas las cuentas:{" "}
+        <span className="font-mono font-semibold text-slate-600">
+          Vigia2026*
+        </span>
+      </p>
     </div>
   );
 }

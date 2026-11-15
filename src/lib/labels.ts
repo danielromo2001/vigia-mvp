@@ -119,6 +119,29 @@ export const reportStatuses = [
   { value: "descartada", label: "Descartada", tone: "slate" as const },
 ];
 
+export const sparePartCategories = [
+  { value: "sensor", label: "Sensores" },
+  { value: "bateria", label: "Baterías" },
+  { value: "consumible", label: "Consumibles" },
+  { value: "repuesto", label: "Repuestos" },
+  { value: "accesorio", label: "Accesorios" },
+  { value: "otro", label: "Otro" },
+];
+
+export const partMovementTypes = [
+  { value: "entrada", label: "Entrada", tone: "emerald" as const },
+  { value: "salida", label: "Salida", tone: "orange" as const },
+  { value: "ajuste", label: "Ajuste", tone: "sky" as const },
+  { value: "solicitud", label: "Solicitud", tone: "violet" as const },
+];
+
+export const supplierStatuses = [
+  { value: "aprobado", label: "Aprobado", tone: "emerald" as const },
+  { value: "seguimiento", label: "Seguimiento", tone: "amber" as const },
+  { value: "revisar", label: "Revisar", tone: "rose" as const },
+  { value: "inactivo", label: "Inactivo", tone: "slate" as const },
+];
+
 export const eventTypes: Record<string, string> = {
   registro: "Registro del equipo",
   preventivo: "Mantenimiento preventivo",
@@ -216,6 +239,121 @@ export function reportStatusMeta(value?: string | null) {
     label: value ?? "Sin estado",
     tone: "slate" as const,
   };
+}
+
+export function partMovementMeta(value?: string | null) {
+  return find(partMovementTypes, value) ?? {
+    value: value ?? "",
+    label: value ?? "Movimiento",
+    tone: "slate" as const,
+  };
+}
+
+export function supplierStatusMeta(value?: string | null) {
+  return find(supplierStatuses, value) ?? {
+    value: value ?? "",
+    label: value ?? "Sin estado",
+    tone: "slate" as const,
+  };
+}
+
+export type StockLevel = {
+  status: "agotado" | "critico" | "bajo" | "adecuado";
+  label: string;
+  tone: "rose" | "amber" | "emerald";
+  ratio: number;
+  deficit: number;
+};
+
+/**
+ * Clasifica el nivel de un repuesto comparando el stock con el mínimo definido.
+ * Se usa en la tabla, en las alertas del panel y en la solicitud de reposición.
+ */
+export function stockLevel(stock: number, minStock: number): StockLevel {
+  const safeMin = Math.max(minStock, 1);
+  const ratio = Math.round((stock / safeMin) * 100);
+  const deficit = Math.max(0, safeMin - stock);
+
+  if (stock <= 0) {
+    return { status: "agotado", label: "Agotado", tone: "rose", ratio: 0, deficit: safeMin };
+  }
+  if (stock < safeMin * 0.5) {
+    return { status: "critico", label: "Stock crítico", tone: "rose", ratio, deficit };
+  }
+  if (stock < safeMin) {
+    return { status: "bajo", label: "Stock bajo", tone: "amber", ratio, deficit };
+  }
+  return {
+    status: "adecuado",
+    label: "Adecuado",
+    tone: "emerald",
+    ratio: Math.min(100, ratio),
+    deficit: 0,
+  };
+}
+
+export function formatDuration(hours: number) {
+  if (hours < 1) return `${Math.max(1, Math.round(hours * 60))} min`;
+  const whole = Math.floor(hours);
+  const minutes = Math.round((hours - whole) * 60);
+  if (whole < 24) {
+    return minutes > 0 ? `${whole} h ${minutes} min` : `${whole} h`;
+  }
+  const days = Math.floor(whole / 24);
+  const rest = whole % 24;
+  return rest > 0 ? `${days} d ${rest} h` : `${days} d`;
+}
+
+export type SlaState = {
+  label: string;
+  tone: "emerald" | "amber" | "rose" | "slate";
+  hours: number;
+  breached: boolean;
+};
+
+/**
+ * Calcula el SLA restante de una orden a partir de su fecha compromiso.
+ * Las órdenes cerradas o canceladas no muestran cuenta regresiva.
+ */
+export function orderSla(
+  order: { dueDate?: Date | string | null; status?: string | null },
+  now: Date = new Date(),
+): SlaState | null {
+  if (!order.dueDate) return null;
+  if (order.status === "cerrada" || order.status === "cancelada") {
+    return { label: "Fuera de SLA", tone: "slate", hours: 0, breached: false };
+  }
+  const diffHours =
+    (new Date(order.dueDate).getTime() - now.getTime()) / 3_600_000;
+  if (diffHours < 0) {
+    return {
+      label: `Vencida ${formatDuration(Math.abs(diffHours))}`,
+      tone: "rose",
+      hours: diffHours,
+      breached: true,
+    };
+  }
+  return {
+    label: `Restan ${formatDuration(diffHours)}`,
+    tone: diffHours <= 24 ? "amber" : "emerald",
+    hours: diffHours,
+    breached: false,
+  };
+}
+
+export function formatCop(value: number) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+export function formatCompactCop(value: number) {
+  if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)} B COP`;
+  if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)} M COP`;
+  if (value >= 1_000) return `$${(value / 1_000).toFixed(0)} K COP`;
+  return formatCop(value);
 }
 
 const dateFormatter = new Intl.DateTimeFormat("es-CO", {

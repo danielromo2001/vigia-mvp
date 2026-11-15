@@ -19,6 +19,7 @@ import {
   selectClass,
 } from "@/components/ui";
 import { isStaff, requireUser } from "@/lib/auth";
+import { EquipmentQuickActions } from "@/components/equipment-quick-actions";
 import {
   criticalityMeta,
   equipmentStatusMeta,
@@ -27,12 +28,13 @@ import {
 } from "@/lib/labels";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = { title: "Equipos biomédicos" };
+export const metadata: Metadata = { title: "Activos biomédicos" };
 
 type SearchParams = Promise<{
   q?: string;
   estado?: string;
   criticidad?: string;
+  registrar?: string;
 }>;
 
 export default async function EquipmentPage({
@@ -101,13 +103,25 @@ export default async function EquipmentPage({
         description="Inventario centralizado del parque tecnológico del hospital, con su estado operativo, criticidad y programación preventiva."
         actions={
           staff ? (
-            <Link
-              href="/equipos/nuevo"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
-            >
-              <Plus className="h-4 w-4" />
-              Registrar equipo
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              <EquipmentQuickActions
+                openRegister={params.registrar === "1"}
+                equipment={equipment.map((item) => ({
+                  id: item.id,
+                  code: item.code,
+                  name: item.name,
+                  location: item.location,
+                  serial: item.serial,
+                }))}
+              />
+              <Link
+                href="/equipos/nuevo"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
+              >
+                <Plus className="h-4 w-4" />
+                Registrar equipo
+              </Link>
+            </div>
           ) : undefined
         }
       />

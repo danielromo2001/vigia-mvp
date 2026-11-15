@@ -4,7 +4,11 @@ import {
   AlertTriangle,
   CalendarCheck,
   CalendarClock,
+  CalendarDays,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  LayoutList,
   PauseCircle,
   PlayCircle,
   Plus,
@@ -36,7 +40,18 @@ import { ConfirmButton } from "@/components/confirm-button";
 
 export const metadata: Metadata = { title: "Preventivos" };
 
-type SearchParams = Promise<{ filtro?: string; q?: string }>;
+type SearchParams = Promise<{
+  filtro?: string;
+  q?: string;
+  vista?: string;
+  mes?: string;
+}>;
+
+const monthNameFormatter = new Intl.DateTimeFormat("es-CO", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 export default async function PreventivePage({
   searchParams,
@@ -47,6 +62,7 @@ export default async function PreventivePage({
   const params = await searchParams;
   const filter = params.filtro ?? "";
   const q = (params.q ?? "").trim();
+  const view = params.vista === "calendario" ? "calendario" : "lista";
 
   const now = new Date();
   const in30 = new Date(now);
@@ -100,6 +116,52 @@ export default async function PreventivePage({
   const staff = isStaff(user);
   const hasFilters = Boolean(filter || q);
 
+  const monthMatch = /^(\d{4})-(\d{2})$/.exec(params.mes ?? "");
+  const baseDate = new Date();
+  const year = monthMatch ? Number(monthMatch[1]) : baseDate.getUTCFullYear();
+  const monthIndex = monthMatch
+    ? Number(monthMatch[2]) - 1
+    : baseDate.getUTCMonth();
+  const monthStart = new Date(Date.UTC(year, monthIndex, 1));
+  const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
+  const leading = (monthStart.getUTCDay() + 6) % 7;
+  const monthLabel = monthNameFormatter.format(monthStart);
+  const todayUtc = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+  );
+
+  const planDays = new Map<number, typeof filteredPlans>();
+  for (const plan of filteredPlans) {
+    const date = new Date(plan.nextDate);
+    if (date.getUTCFullYear() === year && date.getUTCMonth() === monthIndex) {
+      const day = date.getUTCDate();
+      planDays.set(day, [...(planDays.get(day) ?? []), plan]);
+    }
+  }
+
+  function monthHref(offset: number) {
+    const target = new Date(Date.UTC(year, monthIndex + offset, 1));
+    const search = new URLSearchParams({ vista: "calendario" });
+    search.set(
+      "mes",
+      `${target.getUTCFullYear()}-${String(target.getUTCMonth() + 1).padStart(2, "0")}`,
+    );
+    if (filter) search.set("filtro", filter);
+    if (q) search.set("q", q);
+    return `/preventivos?${search.toString()}`;
+  }
+
+  function viewHref(target: "lista" | "calendario") {
+    const search = new URLSearchParams();
+    if (filter) search.set("filtro", filter);
+    if (q) search.set("q", q);
+    if (target === "calendario") search.set("vista", "calendario");
+    const query = search.toString();
+    return `/preventivos${query ? `?${query}` : ""}`;
+  }
+
   const tabs = [
     { label: "Todos los planes", value: "", count: allPlans.length },
     { label: "Próximos 30 días", value: "proximos", count: upcomingPlans.length },
@@ -118,15 +180,41 @@ export default async function PreventivePage({
         title="Preventivos"
         description="Planes de mantenimiento por equipo, con periodicidad y alertas tempranas para evitar la indisponibilidad del parque biomédico."
         actions={
-          staff ? (
-            <Link
-              href="/preventivos/nuevo"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
-            >
-              <Plus className="h-4 w-4" />
-              Programar preventivo
-            </Link>
-          ) : undefined
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex rounded-xl border border-slate-200 bg-white p-0.5 shadow-sm">
+              <Link
+                href={viewHref("lista")}
+                className={`inline-flex h-9 items-center gap-1.5 rounded-[10px] px-3 text-xs font-semibold transition ${
+                  view === "lista"
+                    ? "bg-navy-900 text-white"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                <LayoutList className="h-3.5 w-3.5" />
+                Lista
+              </Link>
+              <Link
+                href={viewHref("calendario")}
+                className={`inline-flex h-9 items-center gap-1.5 rounded-[10px] px-3 text-xs font-semibold transition ${
+                  view === "calendario"
+                    ? "bg-navy-900 text-white"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                <CalendarDays className="h-3.5 w-3.5" />
+                Calendario
+              </Link>
+            </div>
+            {staff ? (
+              <Link
+                href="/preventivos/nuevo"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
+              >
+                <Plus className="h-4 w-4" />
+                Programar preventivo
+              </Link>
+            ) : null}
+          </div>
         }
       />
 
@@ -241,6 +329,143 @@ export default async function PreventivePage({
         </form>
       </Card>
 
+      {view === "calendario" ? (
+        <Card className="overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
+            <div className="flex items-center gap-2">
+              <Link
+                href={monthHref(-1)}
+                className="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition hover:bg-slate-50 hover:text-slate-700"
+                aria-label="Mes anterior"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Link>
+              <p className="min-w-[150px] text-center text-sm font-semibold capitalize text-slate-900">
+                {monthLabel}
+              </p>
+              <Link
+                href={monthHref(1)}
+                className="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition hover:bg-slate-50 hover:text-slate-700"
+                aria-label="Mes siguiente"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              {filteredPlans.length} planes · {planDays.size} días con actividad
+            </p>
+          </div>
+          <div className="p-4">
+            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+              {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map(
+                (day) => (
+                  <div key={day} className="py-1">
+                    {day}
+                  </div>
+                ),
+              )}
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+              {Array.from({ length: leading }).map((_, index) => (
+                <div
+                  key={`blank-${index}`}
+                  className="min-h-[86px] rounded-lg bg-slate-50/40"
+                />
+              ))}
+              {Array.from({ length: daysInMonth }, (_, index) => index + 1).map(
+                (day) => {
+                  const isToday =
+                    Date.UTC(year, monthIndex, day) === todayUtc;
+                  const dayPlans = planDays.get(day) ?? [];
+                  return (
+                    <div
+                      key={day}
+                      className={`min-h-[86px] rounded-lg border p-1.5 ${
+                        isToday
+                          ? "border-teal-300 bg-teal-50/40"
+                          : "border-slate-100 bg-white"
+                      }`}
+                    >
+                      <div className="mb-1 flex items-center justify-between">
+                        <span
+                          className={`text-[10px] font-semibold ${
+                            isToday ? "text-teal-700" : "text-slate-400"
+                          }`}
+                        >
+                          {day}
+                        </span>
+                        {dayPlans.length > 0 ? (
+                          <span className="rounded-full bg-slate-100 px-1 text-[9px] text-slate-500">
+                            {dayPlans.length}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="space-y-1">
+                        {dayPlans.slice(0, 3).map((plan) => {
+                          const days = daysUntil(plan.nextDate);
+                          const overdue =
+                            plan.active && days !== null && days < 0;
+                          const soon =
+                            plan.active &&
+                            days !== null &&
+                            days >= 0 &&
+                            days <= 7;
+                          const tone = !plan.active
+                            ? "slate"
+                            : overdue
+                              ? "rose"
+                              : soon
+                                ? "amber"
+                                : "teal";
+                          const colors: Record<string, string> = {
+                            slate: "bg-slate-100 text-slate-500",
+                            rose: "bg-rose-100 text-rose-700",
+                            amber: "bg-amber-100 text-amber-700",
+                            teal: "bg-teal-100 text-teal-700",
+                          };
+                          return (
+                            <Link
+                              key={plan.id}
+                              href={`/equipos/${plan.equipmentId}`}
+                              className={`block truncate rounded px-1.5 py-0.5 text-[9px] font-semibold transition hover:opacity-80 ${colors[tone]}`}
+                              title={`${plan.equipment.code} · ${plan.equipment.name}`}
+                            >
+                              {plan.equipment.code}
+                            </Link>
+                          );
+                        })}
+                        {dayPlans.length > 3 ? (
+                          <p className="px-1 text-[9px] text-slate-400">
+                            +{dayPlans.length - 3} más
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                },
+              )}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] text-slate-500">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-teal-400" />
+                Al día
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-amber-400" />
+                Próximo (7 días)
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-rose-400" />
+                Vencido
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-slate-300" />
+                Inactivo
+              </span>
+            </div>
+          </div>
+        </Card>
+      ) : (
       <Card className="overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-3.5">
           <p className="text-xs font-medium text-slate-500">
@@ -429,6 +654,7 @@ export default async function PreventivePage({
           </div>
         )}
       </Card>
+      )}
 
       {equipmentWithoutPlan.length > 0 ? (
         <Card className="mt-6">

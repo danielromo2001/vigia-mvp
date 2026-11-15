@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import QRCode from "qrcode";
 import {
   ArrowLeft,
   CalendarClock,
   ClipboardList,
+  Download,
   History,
   MapPin,
   MessageSquareWarning,
   Pencil,
   Plus,
+  QrCode,
   Stethoscope,
   Wrench,
 } from "lucide-react";
@@ -87,6 +92,17 @@ export default async function EquipmentDetailPage({
   const planDays = equipment.plan ? daysUntil(equipment.plan.nextDate) : null;
   const overdue = planDays !== null && planDays < 0;
   const soon = planDays !== null && planDays >= 0 && planDays <= 7;
+  const headerList = await headers();
+  const host = headerList.get("host") ?? "localhost:3000";
+  const protocol =
+    headerList.get("x-forwarded-proto") ??
+    (process.env.NODE_ENV === "production" ? "https" : "http");
+  const equipmentUrl = `${protocol}://${host}/equipos/${equipment.id}`;
+  const qrDataUrl = await QRCode.toDataURL(equipmentUrl, {
+    margin: 1,
+    width: 240,
+    color: { dark: "#0a1f33", light: "#ffffff" },
+  });
   const planProgress =
     equipment.plan && planDays !== null
       ? Math.max(
@@ -318,6 +334,51 @@ export default async function EquipmentDetailPage({
         </div>
 
         <div className="space-y-5">
+          <Card className="p-5">
+            <div className="mb-3 flex items-start justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900">
+                  Ficha QR del activo
+                </h2>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Etiqueta institucional para inventario físico.
+                </p>
+              </div>
+              <QrCode className="h-5 w-5 text-teal-500" />
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="shrink-0 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                <Image
+                  src={qrDataUrl}
+                  alt={`Código QR de ${equipment.code}`}
+                  width={112}
+                  height={112}
+                  unoptimized
+                  className="h-28 w-28"
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-800">
+                  {equipment.code}
+                </p>
+                <p className="mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-slate-500">
+                  {equipment.name}
+                </p>
+                <p className="mt-1 text-[10px] text-slate-400">
+                  Escanea con el móvil para abrir la hoja de vida.
+                </p>
+                <a
+                  href={qrDataUrl}
+                  download={`QR-${equipment.code}.png`}
+                  className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50"
+                >
+                  <Download className="h-3 w-3" />
+                  Descargar QR
+                </a>
+              </div>
+            </div>
+          </Card>
+
           <Card className="p-5">
             <div className="mb-3 flex items-start justify-between">
               <div>

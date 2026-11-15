@@ -17,6 +17,10 @@ function fixedDate(value: string) {
 
 async function main() {
   console.log("Limpiando datos anteriores...");
+  await prisma.partMovement.deleteMany();
+  await prisma.sparePart.deleteMany();
+  await prisma.supplierContract.deleteMany();
+  await prisma.supplier.deleteMany();
   await prisma.failureReport.deleteMany();
   await prisma.maintenanceLog.deleteMany();
   await prisma.workOrder.deleteMany();
@@ -34,7 +38,7 @@ async function main() {
 
   const password = await hash("Vigia2026*", 10);
 
-  const [tecnico, admin, clinico] = await Promise.all([
+  const [tecnico, admin, , clinico] = await Promise.all([
     prisma.user.create({
       data: {
         name: "Emanuel Campo",
@@ -528,6 +532,292 @@ async function main() {
         workOrderId: data.workOrderCode
           ? ordersByCode[data.workOrderCode]?.id ?? null
           : null,
+        createdAt: data.createdAt,
+      },
+    });
+  }
+
+  console.log("Creando proveedores, contratos y repuestos...");
+  const proveedoresData = [
+    {
+      name: "Tecnosalud Colombia",
+      specialty: "Ventilación y anestesia",
+      contactName: "Laura Operativa",
+      phone: "601 555 0142",
+      email: "servicio@tecnosalud.co",
+      performance: 96,
+      status: "aprobado",
+      notes: "Proveedor biomédico con soporte especializado en ventilación pediátrica.",
+    },
+    {
+      name: "BioService Andino",
+      specialty: "Monitorización e infusión",
+      contactName: "Mesa técnica 24/7",
+      phone: "601 555 0188",
+      email: "soporte@bioserviceandino.co",
+      performance: 89,
+      status: "aprobado",
+      notes: "Atención de garantías y repuestos originales.",
+    },
+    {
+      name: "MediCal Labs",
+      specialty: "Calibración metrológica",
+      contactName: "Canal institucional",
+      phone: "601 555 0210",
+      email: "calidad@medicalabs.co",
+      performance: 78,
+      status: "seguimiento",
+      notes: "Pendiente actualizar certificados de calibración del último trimestre.",
+    },
+    {
+      name: "Suministros Clínicos",
+      specialty: "Repuestos multimarca",
+      contactName: "Compras y logística",
+      phone: "601 555 0233",
+      email: "compras@suministrosclinicos.co",
+      performance: 64,
+      status: "revisar",
+      notes: "Sin contrato vigente; evaluar tiempos de entrega antes de renovar.",
+    },
+  ];
+
+  const proveedores: Record<string, { id: number }> = {};
+  for (const data of proveedoresData) {
+    const proveedor = await prisma.supplier.create({ data });
+    proveedores[data.name] = proveedor;
+  }
+
+  const contratos = [
+    {
+      supplier: "Tecnosalud Colombia",
+      code: "CT-2026-014",
+      description: "Mantenimiento especializado para ventilación pediátrica.",
+      startDate: fixedDate("2026-01-01"),
+      endDate: fixedDate("2026-12-31"),
+      value: 48_000_000,
+      slaHours: 4,
+      nextReview: fixedDate("2026-11-15"),
+    },
+    {
+      supplier: "BioService Andino",
+      code: "CT-2025-082",
+      description: "Soporte y monitoreo de bombas de infusión.",
+      startDate: fixedDate("2025-07-01"),
+      endDate: fixedDate("2026-06-30"),
+      value: 32_000_000,
+      slaHours: 8,
+      nextReview: fixedDate("2026-05-30"),
+    },
+    {
+      supplier: "MediCal Labs",
+      code: "CT-2026-031",
+      description: "Calibración metrológica anual del parque biomédico.",
+      startDate: fixedDate("2026-03-01"),
+      endDate: fixedDate("2027-02-28"),
+      value: 12_500_000,
+      slaHours: 24,
+      nextReview: fixedDate("2026-09-01"),
+    },
+  ];
+
+  for (const data of contratos) {
+    await prisma.supplierContract.create({
+      data: {
+        supplierId: proveedores[data.supplier].id,
+        code: data.code,
+        description: data.description,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        value: data.value,
+        slaHours: data.slaHours,
+        nextReview: data.nextReview,
+      },
+    });
+  }
+
+  const repuestosData = [
+    {
+      code: "SNS-NEO-04",
+      name: "Sensor de oxígeno neonatal",
+      category: "sensor",
+      location: "Almacén biomédico · A-03",
+      stock: 4,
+      minStock: 10,
+      unit: "unidad",
+      unitCost: 850_000,
+      supplier: "Tecnosalud Colombia",
+    },
+    {
+      code: "BAT-DES-12",
+      name: "Batería 12V para desfibrilador",
+      category: "bateria",
+      location: "Almacén biomédico · B-01",
+      stock: 2,
+      minStock: 5,
+      unit: "unidad",
+      unitCost: 1_200_000,
+      supplier: "BioService Andino",
+    },
+    {
+      code: "LPR-008",
+      name: "Línea de presión reutilizable",
+      category: "consumible",
+      location: "Central de insumos · C-08",
+      stock: 18,
+      minStock: 12,
+      unit: "unidad",
+      unitCost: 95_000,
+      supplier: "Suministros Clínicos",
+    },
+    {
+      code: "FHI-229",
+      name: "Filtro HEPA para incubadora",
+      category: "consumible",
+      location: "Almacén biomédico · A-06",
+      stock: 7,
+      minStock: 8,
+      unit: "unidad",
+      unitCost: 320_000,
+      supplier: "Tecnosalud Colombia",
+    },
+    {
+      code: "SET-INF-05",
+      name: "Set de infusión pediátrico",
+      category: "consumible",
+      location: "Central de insumos · C-01",
+      stock: 42,
+      minStock: 30,
+      unit: "caja",
+      unitCost: 18_000,
+      supplier: "BioService Andino",
+    },
+    {
+      code: "ELE-MON-11",
+      name: "Electrodos de monitorización",
+      category: "consumible",
+      location: "Almacén biomédico · A-02",
+      stock: 0,
+      minStock: 20,
+      unit: "caja",
+      unitCost: 4_500,
+      supplier: "Suministros Clínicos",
+    },
+    {
+      code: "VAL-AUT-03",
+      name: "Válvula de presión para autoclave",
+      category: "repuesto",
+      location: "Almacén biomédico · B-04",
+      stock: 3,
+      minStock: 4,
+      unit: "unidad",
+      unitCost: 760_000,
+      supplier: "MediCal Labs",
+    },
+    {
+      code: "CEL-FOT-02",
+      name: "Celda de fototerapia LED",
+      category: "repuesto",
+      location: "Almacén biomédico · A-07",
+      stock: 5,
+      minStock: 3,
+      unit: "unidad",
+      unitCost: 540_000,
+      supplier: "Tecnosalud Colombia",
+    },
+    {
+      code: "ACE-ECG-07",
+      name: "Cable ECG de 5 derivaciones",
+      category: "accesorio",
+      location: "Almacén biomédico · A-01",
+      stock: 9,
+      minStock: 6,
+      unit: "unidad",
+      unitCost: 210_000,
+      supplier: "BioService Andino",
+    },
+    {
+      code: "FIL-VEN-09",
+      name: "Filtro de ventilador mecánico",
+      category: "consumible",
+      location: "Almacén biomédico · B-02",
+      stock: 14,
+      minStock: 12,
+      unit: "unidad",
+      unitCost: 145_000,
+      supplier: "Tecnosalud Colombia",
+    },
+  ];
+
+  const repuestos: Record<string, { id: number }> = {};
+  for (const data of repuestosData) {
+    const repuesto = await prisma.sparePart.create({
+      data: {
+        code: data.code,
+        name: data.name,
+        category: data.category,
+        location: data.location,
+        stock: data.stock,
+        minStock: data.minStock,
+        unit: data.unit,
+        unitCost: data.unitCost,
+        supplierId: proveedores[data.supplier].id,
+        notes: "Referencia incluida en el inventario de demostración.",
+      },
+    });
+    repuestos[data.code] = repuesto;
+  }
+
+  const movimientos = [
+    {
+      code: "BAT-DES-12",
+      type: "salida",
+      quantity: -1,
+      reason: "Consumo para atención de falla del desfibrilador.",
+      workOrderCode: "OT-2026-0009",
+      createdAt: atNoon(0),
+    },
+    {
+      code: "LPR-008",
+      type: "entrada",
+      quantity: 12,
+      reason: "Compra OC-884.",
+      createdAt: atNoon(-2),
+    },
+    {
+      code: "FIL-VEN-09",
+      type: "salida",
+      quantity: -2,
+      reason: "Mantenimiento preventivo del ventilador mecánico.",
+      workOrderCode: "OT-2026-0001",
+      createdAt: atNoon(-2),
+    },
+    {
+      code: "SET-INF-05",
+      type: "entrada",
+      quantity: 30,
+      reason: "Compra OC-901.",
+      createdAt: atNoon(-5),
+    },
+    {
+      code: "ELE-MON-11",
+      type: "salida",
+      quantity: -8,
+      reason: "Reposición de electrodos en monitorización.",
+      createdAt: atNoon(-7),
+    },
+  ];
+
+  for (const data of movimientos) {
+    await prisma.partMovement.create({
+      data: {
+        partId: repuestos[data.code].id,
+        type: data.type,
+        quantity: data.quantity,
+        reason: data.reason,
+        workOrderId: data.workOrderCode
+          ? ordersByCode[data.workOrderCode]?.id ?? null
+          : null,
+        userId: tecnico.id,
         createdAt: data.createdAt,
       },
     });

@@ -26,6 +26,7 @@ model User {
   workOrders      WorkOrder[]     @relation("Responsable")
   reports         FailureReport[] @relation("Reportante")
   reviewedReports FailureReport[] @relation("Revisor")
+  partMovements   PartMovement[]
 }
 
 model Equipment {
@@ -84,6 +85,7 @@ model WorkOrder {
   updatedAt     DateTime        @updatedAt
   log           MaintenanceLog?
   originReport  FailureReport?  @relation("OrdenGenerada")
+  partMovements PartMovement[]
 
   @@index([status, openedAt])
 }
@@ -140,4 +142,80 @@ model FailureReport {
 
   @@index([status, createdAt])
   @@index([equipmentId, createdAt])
+}
+
+/// Repuesto o consumible del almacén biomédico. El stock se actualiza con
+/// movimientos trazables (entrada, salida, ajuste o solicitud de compra).
+model SparePart {
+  id         Int            @id @default(autoincrement())
+  code       String         @unique
+  name       String
+  category   String         @default("otro")
+  location   String
+  stock      Int            @default(0)
+  minStock   Int            @default(0)
+  unit       String         @default("unidad")
+  unitCost   Float          @default(0)
+  supplierId Int?
+  supplier   Supplier?      @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  active     Boolean        @default(true)
+  notes      String?
+  movements  PartMovement[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([category])
+}
+
+model PartMovement {
+  id          Int        @id @default(autoincrement())
+  partId      Int
+  part        SparePart  @relation(fields: [partId], references: [id], onDelete: Cascade)
+  type        String
+  quantity    Int
+  reason      String?
+  workOrderId Int?
+  workOrder   WorkOrder? @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  userId      Int?
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime   @default(now())
+
+  @@index([partId, createdAt])
+}
+
+/// Proveedor de equipos, repuestos o servicios técnicos. El desempeño es una
+/// calificación explicable (0-100) construida con los criterios del comité.
+model Supplier {
+  id          Int                @id @default(autoincrement())
+  name        String             @unique
+  specialty   String
+  contactName String?
+  phone       String?
+  email       String?
+  performance Int                @default(0)
+  status      String             @default("aprobado")
+  notes       String?
+  contracts   SupplierContract[]
+  parts       SparePart[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([status])
+}
+
+model SupplierContract {
+  id          Int      @id @default(autoincrement())
+  supplierId  Int
+  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  code        String   @unique
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  value       Float    @default(0)
+  slaHours    Int      @default(0)
+  nextReview  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([endDate])
 }

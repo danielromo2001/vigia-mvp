@@ -12,12 +12,15 @@ Aplicación web para gestionar el mantenimiento de equipos biomédicos: centrali
 
 ## Funcionalidades
 
-- **Equipos:** registro y consulta de equipos biomédicos, con estado, criticidad, ubicación e historial de mantenimiento.
-- **Órdenes de trabajo:** creación, asignación, seguimiento y cierre de órdenes preventivas y correctivas.
-- **Mantenimiento preventivo:** programación por equipo según frecuencia y consulta de próximos vencimientos.
+- **Equipos:** registro y consulta de equipos biomédicos, con estado, criticidad, ubicación e historial de mantenimiento. Incluye registro rápido, búsqueda por código/serie y ficha QR descargable para etiquetar el activo físicamente.
+- **Órdenes de trabajo:** creación, asignación, seguimiento y cierre de órdenes preventivas y correctivas, con filtro por prioridad y cuenta regresiva del SLA comprometido.
+- **Mantenimiento preventivo:** programación por equipo según frecuencia, consulta de próximos vencimientos y vista de calendario mensual con navegación entre meses.
+- **Repuestos:** inventario del almacén biomédico con mínimos, nivel de stock, valorización en COP, movimientos de entrada/salida/ajuste y solicitud de reposición de las referencias bajo mínimo.
+- **Proveedores:** directorio con especialidad, contacto, desempeño, contratos vigentes, valor contratado, SLA y próximas revisiones.
 - **Reportes de falla con triaje asistido por IA:** el personal clínico reporta una falla y el sistema sugiere categoría, prioridad, tipo de orden y fecha de atención. Ingeniería biomédica acepta, ajusta o descarta la sugerencia antes de convertirla en orden. ([Detalle técnico](docs/ia-reportes.md))
+- **Búsqueda global:** acceso con `Ctrl+K` para encontrar activos, órdenes, reportes, repuestos y proveedores desde cualquier pantalla.
 - **Usuarios y roles:** administración de cuentas para técnicos biomédicos, administradores, gerencia y personal clínico.
-- **Panel e informes:** indicadores MTTR y MTBF, cumplimiento preventivo, desempeño del triaje IA y exportación de órdenes y reportes a CSV.
+- **Panel e informes:** indicadores MTTR y MTBF, cumplimiento preventivo, estado operativo, carga del equipo, alertas priorizadas y exportación de órdenes y reportes a CSV.
 
 ## Tecnologías
 
@@ -112,7 +115,7 @@ prisma/
 docs/           Requerimientos, diagramas y capturas
 ```
 
-Consulta el [plan del MVP](docs/mvp-plan.md), los [requerimientos](docs/requerimientos.txt), el [diagrama de arquitectura C4](docs/Diagramas_C4_Mantenimiento_Hospitalario.drawio), el [detalle del triaje IA](docs/ia-reportes.md) y las [recomendaciones de IA](docs/ia-recomendaciones.md) para más contexto del proyecto.
+Consulta el [plan del MVP](docs/mvp-plan.md), los [requerimientos](docs/requerimientos.txt), el [diagrama de arquitectura C4](docs/Diagramas_C4_Mantenimiento_Hospitalario.drawio), la [adaptación UX/UI a los mockups UPED](docs/ux-uped.md), el [detalle del triaje IA](docs/ia-reportes.md) y las [recomendaciones de IA](docs/ia-recomendaciones.md) para más contexto del proyecto.
 
 ## Seguridad y datos
 

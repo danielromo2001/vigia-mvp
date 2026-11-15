@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Bell,
+  Boxes,
   Building2,
   CalendarClock,
   ClipboardList,
@@ -20,7 +21,9 @@ import {
   X,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
+import { GlobalSearch } from "@/components/global-search";
 import { cn } from "@/components/ui";
+import type { OperationStatus } from "@/lib/operation-status";
 
 type ShellUser = {
   name: string;
@@ -29,21 +32,34 @@ type ShellUser = {
 };
 
 const operationNav = [
-  { href: "/panel", label: "Panel", icon: LayoutDashboard },
-  {
-    href: "/reportes-falla",
-    label: "Reportes de falla",
-    icon: MessageSquareWarning,
-  },
-  { href: "/equipos", label: "Equipos biomédicos", icon: Stethoscope },
-  { href: "/ordenes", label: "Órdenes de trabajo", icon: ClipboardList },
-  { href: "/preventivos", label: "Preventivos", icon: CalendarClock },
+  { href: "/panel", label: "Resumen", icon: LayoutDashboard },
+  { href: "/equipos", label: "Activos", icon: Stethoscope },
+  { href: "/ordenes", label: "Órdenes", icon: ClipboardList },
+  { href: "/preventivos", label: "Mantenimientos", icon: CalendarClock },
+  { href: "/repuestos", label: "Repuestos", icon: Boxes },
+  { href: "/proveedores", label: "Proveedores", icon: Building2 },
+];
+
+const analysisNav = [
+  { href: "/reportes-falla", label: "Reportes de falla", icon: MessageSquareWarning },
+  { href: "/reportes", label: "Reportes", icon: BarChart3 },
 ];
 
 const adminNav = [
-  { href: "/usuarios", label: "Usuarios y roles", icon: Users, adminOnly: true },
-  { href: "/reportes", label: "Reportes", icon: BarChart3 },
+  { href: "/usuarios", label: "Usuarios y roles", icon: Users },
 ];
+
+const statusDot: Record<OperationStatus["tone"], string> = {
+  emerald: "bg-emerald-400",
+  amber: "bg-amber-400",
+  rose: "bg-rose-400",
+};
+
+const statusPill: Record<OperationStatus["tone"], string> = {
+  emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  amber: "border-amber-200 bg-amber-50 text-amber-700",
+  rose: "border-rose-200 bg-rose-50 text-rose-700",
+};
 
 function initials(name: string) {
   return name
@@ -54,16 +70,31 @@ function initials(name: string) {
     .join("");
 }
 
+function shiftLabel() {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: "America/Bogota",
+    }).format(new Date()),
+  );
+  return hour < 12 ? "Turno mañana" : hour < 18 ? "Turno tarde" : "Turno noche";
+}
+
 export function AppShell({
   user,
   alertCount,
   reportCount,
+  lowStockCount,
+  operation,
   todayLabel,
   children,
 }: {
   user: ShellUser;
   alertCount: number;
   reportCount: number;
+  lowStockCount: number;
+  operation: OperationStatus;
   todayLabel: string;
   children: React.ReactNode;
 }) {
@@ -73,13 +104,14 @@ export function AppShell({
 
   const navGroups = [
     { title: "Operación", items: operationNav },
+    { title: "Análisis", items: analysisNav },
     {
-      title: "Análisis",
-      items: adminNav.filter((item) => !item.adminOnly || isAdmin),
+      title: "Administración",
+      items: adminNav.filter(() => isAdmin),
     },
   ].filter((group) => group.items.length > 0);
 
-  const activeItem = [...operationNav, ...adminNav].find(
+  const activeItem = [...operationNav, ...analysisNav, ...adminNav].find(
     (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
   );
 
@@ -107,7 +139,7 @@ export function AppShell({
         </button>
       </div>
 
-      <div className="mx-3 mb-5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
+      <div className="mx-3 mb-4 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
         <div className="flex items-start gap-2.5">
           <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-400" />
           <div className="min-w-0">
@@ -121,7 +153,7 @@ export function AppShell({
         </div>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 pb-4 scrollbar-thin">
+      <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-4 scrollbar-thin">
         {navGroups.map((group) => (
           <div key={group.title}>
             <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
@@ -131,6 +163,14 @@ export function AppShell({
               {group.items.map((item) => {
                 const active =
                   pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const badge =
+                  item.href === "/preventivos"
+                    ? alertCount
+                    : item.href === "/reportes-falla"
+                      ? reportCount
+                      : item.href === "/repuestos"
+                        ? lowStockCount
+                        : 0;
                 return (
                   <Link
                     key={item.href}
@@ -152,14 +192,18 @@ export function AppShell({
                       )}
                     />
                     {item.label}
-                    {item.href === "/preventivos" && alertCount > 0 ? (
-                      <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500/90 px-1.5 text-[10px] font-bold text-white">
-                        {alertCount}
-                      </span>
-                    ) : null}
-                    {item.href === "/reportes-falla" && reportCount > 0 ? (
-                      <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-violet-500/90 px-1.5 text-[10px] font-bold text-white">
-                        {reportCount}
+                    {badge > 0 ? (
+                      <span
+                        className={cn(
+                          "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white",
+                          item.href === "/repuestos"
+                            ? "bg-amber-500/90"
+                            : item.href === "/reportes-falla"
+                              ? "bg-violet-500/90"
+                              : "bg-rose-500/90",
+                        )}
+                      >
+                        {badge}
                       </span>
                     ) : null}
                   </Link>
@@ -168,6 +212,37 @@ export function AppShell({
             </div>
           </div>
         ))}
+
+        <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3">
+          <div className="flex items-center gap-2">
+            <span
+              className={cn(
+                "h-2 w-2 shrink-0 rounded-full",
+                statusDot[operation.tone],
+              )}
+            />
+            <p className="text-[11px] font-semibold text-slate-100">
+              {operation.label}
+            </p>
+          </div>
+          <p className="mt-1 text-[10px] leading-relaxed text-slate-500">
+            {operation.detail}
+          </p>
+          <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-center">
+            <div className="rounded-lg bg-white/[0.04] px-1.5 py-1.5">
+              <p className="text-sm font-semibold text-white">{alertCount}</p>
+              <p className="text-[9px] uppercase tracking-wide text-slate-500">
+                Alertas
+              </p>
+            </div>
+            <div className="rounded-lg bg-white/[0.04] px-1.5 py-1.5">
+              <p className="text-sm font-semibold text-white">{lowStockCount}</p>
+              <p className="text-[9px] uppercase tracking-wide text-slate-500">
+                Reponer
+              </p>
+            </div>
+          </div>
+        </div>
       </nav>
 
       <div className="border-t border-white/[0.07] p-3">
@@ -195,6 +270,10 @@ export function AppShell({
               </button>
             </form>
           </div>
+          <p className="mt-2 flex items-center gap-1.5 border-t border-white/[0.06] pt-2 text-[10px] text-slate-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            {shiftLabel()} · En línea
+          </p>
         </div>
         <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-slate-600">
           <ShieldCheck className="h-3 w-3" />
@@ -236,23 +315,43 @@ export function AppShell({
               <Menu className="h-5 w-5" />
             </button>
 
-            <div className="hidden items-center gap-2 text-xs text-slate-400 sm:flex">
+            <div className="hidden items-center gap-2 text-xs text-slate-400 md:flex">
               <span className="font-semibold tracking-[0.16em] text-slate-700">
                 VIGÍA
               </span>
               <span className="text-slate-300">/</span>
               <span className="font-medium text-slate-600">
-                {activeItem?.label ?? "Panel"}
+                {activeItem?.label ?? "Resumen"}
+              </span>
+              <span className="hidden text-slate-300 xl:inline">·</span>
+              <span className="hidden whitespace-nowrap text-slate-400 xl:inline">
+                {todayLabel}
               </span>
             </div>
 
-            <p className="ml-auto hidden text-xs text-slate-500 md:block">
-              {todayLabel}
-            </p>
+            <div className="flex min-w-0 flex-1 justify-end md:justify-center">
+              <GlobalSearch />
+            </div>
+
+            <span
+              className={cn(
+                "hidden shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold xl:inline-flex",
+                statusPill[operation.tone],
+              )}
+              title={operation.detail}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  statusDot[operation.tone],
+                )}
+              />
+              {operation.label}
+            </span>
 
             <Link
               href="/preventivos?filtro=vencidos"
-              className="relative ml-auto rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-700 md:ml-4"
+              className="relative shrink-0 rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-700"
               aria-label="Ver alertas de mantenimiento"
             >
               <Bell className="h-[18px] w-[18px]" />
@@ -265,7 +364,7 @@ export function AppShell({
 
             <div className="hidden h-8 w-px bg-slate-200 sm:block" />
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex shrink-0 items-center gap-2.5">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-900 text-[10px] font-bold text-white">
                 {initials(user.name)}
               </span>
